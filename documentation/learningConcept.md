@@ -1,0 +1,15 @@
+- learning through combination of
+  - knowing meaning of kanji
+  - being able to read and write words / sentences
+  - differentiation between similar symbols (same radicals)
+- parameters to determine learning status / progress
+  - number of words known
+  - percentage of known readings (Σ (frequency of reading) * (progress of reading)
+  - times of repitition, percentage of correctness (all time, latest tries)
+  - words -> number of known sentences, accuracy
+  - entry in collection at (~first seen)
+- study lists
+  - pre / self created
+  - list of words
+  - one (+) active
+  - lessons with content of active list(s)
