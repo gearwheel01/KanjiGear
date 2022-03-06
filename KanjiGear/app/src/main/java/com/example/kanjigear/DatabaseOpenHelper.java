@@ -1,6 +1,7 @@
 package com.example.kanjigear;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -102,6 +103,9 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Cursor handleQuery(String query) {
+        return myDb.rawQuery(query, null);
+    }
 
     public String getFilePath() {
         return dbPath + DATABASE_NAME;

@@ -3,11 +3,13 @@ package com.example.kanjigear;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     private static DatabaseOpenHelper dbHelper;
+    private static DatabaseAccess dbAccess;
     private static boolean databaseOpened;
 
     @Override
@@ -17,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
         databaseOpened = false;
         dbHelper = new DatabaseOpenHelper(this.getApplicationContext());
+        dbAccess = new DatabaseAccess(dbHelper);
         if (dbHelper.checkDb()) {
             openDatabase();
         } else {
@@ -34,5 +37,9 @@ public class MainActivity extends AppCompatActivity {
         catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void quickLesson(View v) {
+
     }
 }

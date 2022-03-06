@@ -67,6 +67,7 @@
         android:layout_height="104dp"
         android:background="@drawable/button_main"
         android:backgroundTintMode="screen"
+        android:onClick="quickLesson"
         android:text="Quick lesson"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
