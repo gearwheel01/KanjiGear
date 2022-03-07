@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".views.MainActivity">
 
 
     <Button
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toBottomOf="@+id/button_quickLesson2" />
 
     <TextView
-        android:id="@+id/text_title"
+        android:id="@+id/studyListName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
@@ -38,7 +38,7 @@
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_title" />
+        app:layout_constraintTop_toBottomOf="@+id/studyListName" />
 
     <TextView
         android:id="@+id/text_level"
@@ -67,7 +67,7 @@
         android:layout_height="104dp"
         android:background="@drawable/button_main"
         android:backgroundTintMode="screen"
-        android:onClick="quickLesson"
+        android:onClick="openQuickLesson"
         android:text="Quick lesson"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -84,6 +84,7 @@
         android:background="@drawable/button_main"
         android:backgroundTintMode="screen"
         android:text="Study Lists"
+        android:onClick="openStudyLists"
         android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

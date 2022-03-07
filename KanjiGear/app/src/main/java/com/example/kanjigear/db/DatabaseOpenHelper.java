@@ -1,4 +1,4 @@
-package com.example.kanjigear;
+package com.example.kanjigear.db;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -78,11 +78,15 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         myDb = SQLiteDatabase.openDatabase(getFilePath(), null, SQLiteDatabase.OPEN_READWRITE);
     }
 
-    @Override
-    public synchronized void close() {
+    public void closeDatabase() {
         if (myDb != null) {
             myDb.close();
         }
+    }
+
+    @Override
+    public synchronized void close() {
+        closeDatabase();
         super.close();
     }
 

@@ -1,11 +1,13 @@
-package com.example.kanjigear;
+package com.example.kanjigear.db;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
+
+import com.example.kanjigear.R;
+import com.example.kanjigear.db.DatabaseOpenHelper;
 
 public class LoadDatabaseAsync extends AsyncTask<Void,Void,Boolean> {
 
@@ -51,7 +53,6 @@ public class LoadDatabaseAsync extends AsyncTask<Void,Void,Boolean> {
         super.onPostExecute(aBoolean);
 
         alertDialog.dismiss();
-        MainActivity.openDatabase();
     }
 
     @Override

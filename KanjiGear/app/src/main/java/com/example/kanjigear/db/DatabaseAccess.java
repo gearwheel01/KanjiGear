@@ -1,39 +1,44 @@
-package com.example.kanjigear;
+package com.example.kanjigear.db;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.example.kanjigear.dataModels.*;
+
+import java.util.ArrayList;
 
 public class DatabaseAccess {
 
     private DatabaseOpenHelper db;
 
-    public DatabaseAccess(DatabaseOpenHelper databaseb) {
-        db = databaseb;
+    public DatabaseAccess(Context context) {
+        db = new DatabaseOpenHelper(context);
     }
 
     @SuppressLint("Range")
-    public StudyList[] getStudyLists() {
+    public ArrayList<StudyList> getStudyLists() {
+        db.openDatabase();
         Cursor c = db.handleQuery("SELECT * FROM studylist;");
-        StudyList[] ret = new StudyList[c.getCount()];
+        ArrayList<StudyList> ret = new ArrayList<StudyList>();
 
         c.moveToFirst();
         for (int i = 0; i < c.getCount(); i += 1) {
             String SLID = c.getString(c.getColumnIndex("SLID"));
             String name = c.getString(c.getColumnIndex("name"));
-            ret[i] = new StudyList(SLID, name);
+            ret.add(new StudyList(SLID, name));
             c.moveToNext();
         }
         c.close();
+        db.closeDatabase();
         return ret;
     }
 
     @SuppressLint("Range")
-    public Word[] getWordsInList(String SLID) {
+    public ArrayList<Word> getWordsInList(String SLID) {
+        db.openDatabase();
         Cursor c = db.handleQuery("SELECT w.* FROM word w,listcontainsword l WHERE w.WID=l.Word_WID AND l.StudyList_SLID=" + SLID + ";");
-        Word[] ret = new Word[c.getCount()];
+        ArrayList<Word> ret = new ArrayList<Word>();
 
         c.moveToFirst();
         for (int i = 0; i < c.getCount(); i += 1) {
@@ -42,10 +47,11 @@ public class DatabaseAccess {
             String grade = c.getString(c.getColumnIndex("grade"));
             int learningProgress = c.getInt(c.getColumnIndex("learningprogress"));
             String pronunciation = c.getString(c.getColumnIndex("pronunciation"));
-            ret[i] = new Word(WID, word, grade, learningProgress, pronunciation);
+            ret.add(new Word(WID, word, grade, learningProgress, pronunciation));
             c.moveToNext();
         }
         c.close();
+        db.closeDatabase();
         return ret;
     }
 }

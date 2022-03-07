@@ -10,10 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KanjiGear">
         <activity
-            android:name=".Dictionary"
+            android:name=".views.studyLists.StudyListDetails"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".views.studyLists.StudyLists"
+            android:exported="false" />
+        <activity
+            android:name=".views.Dictionary"
+            android:exported="false" />
+        <activity
+            android:name=".views.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
