@@ -1,5 +1,6 @@
 package com.example.kanjigear.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -113,5 +114,17 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     public String getFilePath() {
         return dbPath + DATABASE_NAME;
+    }
+
+    public void insert(String table, ContentValues values) {
+        myDb.insert(table, null, values);
+    }
+
+    public void delete(String table, String idName, String id) {
+        myDb.delete(table, idName + "= '" + id + "'" , null);
+    }
+
+    public void update(String table, ContentValues values, String idName, String id) {
+        myDb.update(table, values, idName + "= '" + id + "'", null);
     }
 }

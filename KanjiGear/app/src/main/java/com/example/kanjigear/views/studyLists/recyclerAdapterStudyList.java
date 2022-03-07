@@ -1,5 +1,6 @@
 package com.example.kanjigear.views.studyLists;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,10 @@ import java.util.ArrayList;
 public class recyclerAdapterStudyList extends RecyclerView.Adapter<recyclerAdapterStudyList.studyListViewHolder> {
 
     private ArrayList<StudyList> studyLists;
+    private StudyLists context;
 
-    public recyclerAdapterStudyList(ArrayList<StudyList> lists) {
+    public recyclerAdapterStudyList(StudyLists context, ArrayList<StudyList> lists) {
+        this.context = context;
         studyLists = lists;
     }
 
@@ -41,6 +44,9 @@ public class recyclerAdapterStudyList extends RecyclerView.Adapter<recyclerAdapt
     public void onBindViewHolder(@NonNull recyclerAdapterStudyList.studyListViewHolder holder, int position) {
         String name = studyLists.get(position).getName();
         holder.name.setText(name);
+        holder.name.setOnClickListener(l -> {
+            context.openListDetails(studyLists.get(position).getSLID());
+        });
     }
 
     @Override
