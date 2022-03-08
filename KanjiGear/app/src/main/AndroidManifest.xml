@@ -10,13 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KanjiGear">
         <activity
+            android:name=".views.KanjiView"
+            android:exported="false" />
+        <activity
             android:name=".views.studyLists.StudyListDetails"
             android:exported="false" />
         <activity
             android:name=".views.studyLists.StudyLists"
             android:exported="false" />
         <activity
-            android:name=".views.Dictionary"
+            android:name=".dictionary.Dictionary"
             android:exported="false" />
         <activity
             android:name=".views.MainActivity"

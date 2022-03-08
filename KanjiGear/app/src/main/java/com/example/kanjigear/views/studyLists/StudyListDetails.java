@@ -9,15 +9,15 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.StudyList;
+import com.example.kanjigear.dataModels.Word;
 import com.example.kanjigear.db.DatabaseOpenHelper;
-import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
 
 public class StudyListDetails extends AppCompatActivity {
 
@@ -29,7 +29,7 @@ public class StudyListDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study_list_details);
-        listName = findViewById(R.id.studyListName);
+        listName = findViewById(R.id.wordBG);
 
         Intent intent = getIntent();
         db = new DatabaseOpenHelper(getApplicationContext());
@@ -77,9 +77,24 @@ public class StudyListDetails extends AppCompatActivity {
         db.closeDatabase();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        updateName();
+    @SuppressLint("Range")
+    public ArrayList<Word> getWordsInList(String SLID) {
+        db.openDatabase();
+        Cursor c = db.handleQuery("SELECT w.* FROM word w,listcontainsword l WHERE w.WID=l.Word_WID AND l.StudyList_SLID=" + SLID + ";");
+        ArrayList<Word> ret = new ArrayList<Word>();
+
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i += 1) {
+            String WID = c.getString(c.getColumnIndex("WID"));
+            String word = c.getString(c.getColumnIndex("word"));
+            String grade = c.getString(c.getColumnIndex("grade"));
+            int learningProgress = c.getInt(c.getColumnIndex("learningprogress"));
+            String pronunciation = c.getString(c.getColumnIndex("pronunciation"));
+            ret.add(new Word(WID, word, grade, learningProgress, pronunciation, ""));
+            c.moveToNext();
+        }
+        c.close();
+        db.closeDatabase();
+        return ret;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.kanjigear.views.studyLists;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,12 @@ import com.example.kanjigear.dataModels.StudyList;
 
 import java.util.ArrayList;
 
-public class recyclerAdapterStudyList extends RecyclerView.Adapter<recyclerAdapterStudyList.studyListViewHolder> {
+public class RecyclerAdapterStudyList extends RecyclerView.Adapter<RecyclerAdapterStudyList.studyListViewHolder> {
 
     private ArrayList<StudyList> studyLists;
     private StudyLists context;
 
-    public recyclerAdapterStudyList(StudyLists context, ArrayList<StudyList> lists) {
+    public RecyclerAdapterStudyList(StudyLists context, ArrayList<StudyList> lists) {
         this.context = context;
         studyLists = lists;
     }
@@ -29,19 +28,19 @@ public class recyclerAdapterStudyList extends RecyclerView.Adapter<recyclerAdapt
 
         public studyListViewHolder(final View view) {
             super(view);
-            name = view.findViewById(R.id.studyListName);
+            name = view.findViewById(R.id.wordBG);
         }
     }
 
     @NonNull
     @Override
-    public recyclerAdapterStudyList.studyListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerAdapterStudyList.studyListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.study_list_item, parent, false);
         return new studyListViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull recyclerAdapterStudyList.studyListViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerAdapterStudyList.studyListViewHolder holder, int position) {
         String name = studyLists.get(position).getName();
         holder.name.setText(name);
         holder.name.setOnClickListener(l -> {

@@ -9,6 +9,7 @@ import android.view.View;
 import com.example.kanjigear.R;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.db.LoadDatabaseAsync;
+import com.example.kanjigear.dictionary.Dictionary;
 import com.example.kanjigear.views.studyLists.StudyLists;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,11 +31,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openQuickLesson(View v) {
-
     }
 
     public void openStudyLists(View v) {
         Intent intent = new Intent(this, StudyLists.class);
+        startActivity(intent);
+    }
+
+    public void openDictionary(View v) {
+        Intent intent = new Intent(this, Dictionary.class);
         startActivity(intent);
     }
 }

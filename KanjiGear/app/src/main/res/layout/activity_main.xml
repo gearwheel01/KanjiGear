@@ -13,14 +13,15 @@
         android:layout_height="73dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="48dp"
-        android:textSize="18dp"
         android:background="@drawable/button_secondary"
+        android:onClick="openDictionary"
         android:text="Dictionary"
+        android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_quickLesson2" />
 
     <TextView
-        android:id="@+id/studyListName"
+        android:id="@+id/wordBG"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
@@ -38,7 +39,7 @@
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/studyListName" />
+        app:layout_constraintTop_toBottomOf="@+id/wordBG" />
 
     <TextView
         android:id="@+id/text_level"
