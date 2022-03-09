@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.StudyList;
+import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class StudyLists extends AppCompatActivity {
     }
 
     public void setAdapter() {
-        studyLists = getStudyLists();
+        getStudyLists();
         RecyclerAdapterStudyList adapter = new RecyclerAdapterStudyList(this, studyLists);
         recyclerView.setAdapter(adapter);
     }
@@ -62,22 +63,11 @@ public class StudyLists extends AppCompatActivity {
 
 
     // Database access
-    @SuppressLint("Range")
-    public ArrayList<StudyList> getStudyLists() {
+    public void getStudyLists() {
         db.openDatabase();
         Cursor c = db.handleQuery("SELECT * FROM studylist;");
-        ArrayList<StudyList> ret = new ArrayList<StudyList>();
-
-        c.moveToFirst();
-        for (int i = 0; i < c.getCount(); i += 1) {
-            String name = c.getString(c.getColumnIndex("name"));
-            String SLID = c.getString(c.getColumnIndex("SLID"));
-            ret.add(new StudyList(SLID,name));
-            c.moveToNext();
-        }
-        c.close();
+        studyLists = new DatabaseModelLoader().getStudyListsFromCursor(c);
         db.closeDatabase();
-        return ret;
     }
 
     // returns id of new list

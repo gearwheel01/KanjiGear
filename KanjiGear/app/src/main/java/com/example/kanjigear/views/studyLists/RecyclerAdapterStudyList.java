@@ -28,14 +28,14 @@ public class RecyclerAdapterStudyList extends RecyclerView.Adapter<RecyclerAdapt
 
         public studyListViewHolder(final View view) {
             super(view);
-            name = view.findViewById(R.id.wordBG);
+            name = view.findViewById(R.id.itemCompKanji);
         }
     }
 
     @NonNull
     @Override
     public RecyclerAdapterStudyList.studyListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.study_list_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_studylist, parent, false);
         return new studyListViewHolder(itemView);
     }
 

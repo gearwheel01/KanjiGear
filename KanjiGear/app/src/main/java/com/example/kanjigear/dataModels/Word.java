@@ -44,9 +44,7 @@ public class Word {
 
     public String getRomaji() {return romaji;}
 
-    public void addTranslation(WordTranslation wt) {
-        wordTranslations.add(wt);
-    }
+    public void setTranslations(ArrayList<WordTranslation> t) {wordTranslations = t;}
 
     // empty string for no lang criteria
     public String getTranslationString(String lang) {

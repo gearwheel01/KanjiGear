@@ -15,6 +15,7 @@ import android.widget.EditText;
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.StudyList;
 import com.example.kanjigear.dataModels.Word;
+import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 
 import java.util.ArrayList;
@@ -25,11 +26,13 @@ public class StudyListDetails extends AppCompatActivity {
     private StudyList list;
     private EditText listName;
 
+    private ArrayList<Word> wordsInList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study_list_details);
-        listName = findViewById(R.id.wordBG);
+        listName = findViewById(R.id.itemCompKanji);
 
         Intent intent = getIntent();
         db = new DatabaseOpenHelper(getApplicationContext());
@@ -78,23 +81,11 @@ public class StudyListDetails extends AppCompatActivity {
     }
 
     @SuppressLint("Range")
-    public ArrayList<Word> getWordsInList(String SLID) {
+    public void getWordsInList(String SLID) {
         db.openDatabase();
         Cursor c = db.handleQuery("SELECT w.* FROM word w,listcontainsword l WHERE w.WID=l.Word_WID AND l.StudyList_SLID=" + SLID + ";");
-        ArrayList<Word> ret = new ArrayList<Word>();
-
-        c.moveToFirst();
-        for (int i = 0; i < c.getCount(); i += 1) {
-            String WID = c.getString(c.getColumnIndex("WID"));
-            String word = c.getString(c.getColumnIndex("word"));
-            String grade = c.getString(c.getColumnIndex("grade"));
-            int learningProgress = c.getInt(c.getColumnIndex("learningprogress"));
-            String pronunciation = c.getString(c.getColumnIndex("pronunciation"));
-            ret.add(new Word(WID, word, grade, learningProgress, pronunciation, ""));
-            c.moveToNext();
-        }
+        wordsInList = new DatabaseModelLoader().getWordsFromCursor(c);
         c.close();
         db.closeDatabase();
-        return ret;
     }
 }

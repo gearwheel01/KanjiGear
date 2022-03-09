@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.kanjigear">
+    package="com.example.kanjigear" >
 
     <application
         android:allowBackup="true"
@@ -8,9 +8,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.KanjiGear">
+        android:theme="@style/Theme.KanjiGear" >
         <activity
-            android:name=".views.KanjiView"
+            android:name=".views.components.WordView"
+            android:exported="false" />
+        <activity
+            android:name=".views.components.KanjiView"
             android:exported="false" />
         <activity
             android:name=".views.studyLists.StudyListDetails"
@@ -19,11 +22,11 @@
             android:name=".views.studyLists.StudyLists"
             android:exported="false" />
         <activity
-            android:name=".dictionary.Dictionary"
+            android:name=".views.dictionary.Dictionary"
             android:exported="false" />
         <activity
             android:name=".views.MainActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

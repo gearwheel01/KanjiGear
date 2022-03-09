@@ -7,7 +7,7 @@
 
 
     <Button
-        android:id="@+id/wordBG"
+        android:id="@+id/itemCompKanji"
         android:layout_width="370dp"
         android:layout_height="48dp"
         android:layout_marginTop="15dp"
@@ -33,9 +33,9 @@
         android:textAlignment="viewStart"
 
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/wordBG"
-        app:layout_constraintStart_toStartOf="@+id/wordBG"
-        app:layout_constraintTop_toTopOf="@+id/wordBG"
+        app:layout_constraintBottom_toBottomOf="@+id/itemCompKanji"
+        app:layout_constraintStart_toStartOf="@+id/itemCompKanji"
+        app:layout_constraintTop_toTopOf="@+id/itemCompKanji"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -51,10 +51,10 @@
         android:text="TextView"
         android:textAlignment="viewStart"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/wordBG"
-        app:layout_constraintEnd_toEndOf="@+id/wordBG"
+        app:layout_constraintBottom_toBottomOf="@+id/itemCompKanji"
+        app:layout_constraintEnd_toEndOf="@+id/itemCompKanji"
         app:layout_constraintStart_toEndOf="@+id/word"
-        app:layout_constraintTop_toTopOf="@+id/wordBG"
+        app:layout_constraintTop_toTopOf="@+id/itemCompKanji"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

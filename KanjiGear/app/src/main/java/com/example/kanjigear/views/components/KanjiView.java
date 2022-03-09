@@ -1,12 +1,15 @@
-package com.example.kanjigear.views;
+package com.example.kanjigear.views.components;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.caverock.androidsvg.SVG;
@@ -19,8 +22,10 @@ import java.util.ArrayList;
 public class KanjiView extends AppCompatActivity {
 
     private ImageView view;
+    private ImageView bg;
+
     private DatabaseOpenHelper db;
-    private String kanji = "本";
+    private String kanji;
     private int size;
     private ArrayList<Stroke> strokes;
 
@@ -30,19 +35,22 @@ public class KanjiView extends AppCompatActivity {
         setContentView(R.layout.activity_kanji_view);
 
         view = findViewById(R.id.imageView);
+        bg = findViewById(R.id.kanjiViewBG);
         db = new DatabaseOpenHelper(getApplicationContext());
 
-        try {
-            SVG svg = SVG.getFromString(getSVGString());
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            size = (int)(displayMetrics.widthPixels * 0.8);
-            svg.setDocumentWidth(size);
-            svg.setDocumentHeight(size);
-            PictureDrawable pd = new PictureDrawable(svg.renderToPicture());
-            view.setImageDrawable(pd);
-        } catch (Exception e) {
-            e.printStackTrace();
+        Intent intent = getIntent();
+        kanji = intent.getStringExtra("symbol");
+
+        ViewTreeObserver viewTreeObserver = bg.getViewTreeObserver();
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    bg.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    size = (int)(bg.getWidth());
+                    openSVG();
+                }
+            });
         }
     }
 
@@ -63,6 +71,21 @@ public class KanjiView extends AppCompatActivity {
         }
         c.close();
         db.closeDatabase();
+    }
+
+    public void openSVG() {
+        try {
+            SVG svg = SVG.getFromString(getSVGString());
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            Log.d("db","size: " + size);
+            svg.setDocumentWidth(size);
+            svg.setDocumentHeight(size);
+            PictureDrawable pd = new PictureDrawable(svg.renderToPicture());
+            view.setImageDrawable(pd);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String getSVGString() {

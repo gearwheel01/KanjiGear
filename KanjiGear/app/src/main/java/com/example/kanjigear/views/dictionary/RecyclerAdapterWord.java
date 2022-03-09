@@ -1,4 +1,4 @@
-package com.example.kanjigear.dictionary;
+package com.example.kanjigear.views.dictionary;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,14 +33,14 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
             super(view);
             word = view.findViewById(R.id.word);
             translation = view.findViewById(R.id.translation);
-            bg = view.findViewById(R.id.wordBG);
+            bg = view.findViewById(R.id.itemCompKanji);
         }
     }
 
     @NonNull
     @Override
     public RecyclerAdapterWord.wordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.dict_word_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dict_word, parent, false);
         return new wordViewHolder(itemView);
     }
 
