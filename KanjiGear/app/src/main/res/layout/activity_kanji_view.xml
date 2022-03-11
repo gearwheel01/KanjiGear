@@ -20,12 +20,93 @@
         android:id="@+id/kanjiViewBG"
         android:layout_width="216dp"
         android:layout_height="216dp"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="128dp"
         android:elevation="-50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@color/purple_200" />
+
+    <TextView
+        android:id="@+id/kanjiViewMeaning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="meaning"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/kanjiViewReadings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="readings"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kanjiViewMeaning" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="215dp"
+        android:layout_height="27dp"
+        app:layout_constraintBottom_toTopOf="@+id/kanjiViewBG"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/kanjiViewListWords"
+        android:layout_width="wrap_content"
+        android:layout_height="62dp"
+        android:layout_marginTop="8dp"
+        android:clipChildren="false"
+        android:clipToPadding="true"
+        android:outlineProvider="paddedBounds"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/kanjiViewWordsBG" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="words"
+        app:layout_constraintBottom_toTopOf="@+id/kanjiViewWordsBG"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/kanjiViewWordsBG"
+        android:layout_width="320dp"
+        android:layout_height="78dp"
+        android:layout_marginTop="100dp"
+        android:background="#5289B86B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kanjiViewBG" />
+
+    <Button
+        android:id="@+id/kanjiViewAnimate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="96dp"
+        android:background="@drawable/button_main"
+        android:onClick="animate"
+        android:text="animate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kanjiViewBG"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

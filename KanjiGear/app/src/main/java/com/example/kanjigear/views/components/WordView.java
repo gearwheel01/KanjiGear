@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Kanji;
 import com.example.kanjigear.dataModels.Word;
-import com.example.kanjigear.dataModels.WordTranslation;
 import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 
@@ -37,7 +36,7 @@ public class WordView extends AppCompatActivity {
 
         db = new DatabaseOpenHelper(getApplicationContext());
         viewTitle = findViewById(R.id.wordViewWord);
-        viewListKanji = findViewById(R.id.wordViewListKanji);
+        viewListKanji = findViewById(R.id.kanjiViewListWords);
         viewDetails = findViewById(R.id.wordViewDetails);
 
         loadWord(intent.getStringExtra("WID"));

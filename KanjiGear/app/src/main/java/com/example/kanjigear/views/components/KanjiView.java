@@ -5,28 +5,48 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PathMeasure;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.caverock.androidsvg.SVG;
 import com.example.kanjigear.R;
+import com.example.kanjigear.dataModels.Bezier;
+import com.example.kanjigear.dataModels.Kanji;
+import com.example.kanjigear.dataModels.KanjiMeaning;
 import com.example.kanjigear.dataModels.Stroke;
+import com.example.kanjigear.dataModels.Word;
+import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 
 import java.util.ArrayList;
 
 public class KanjiView extends AppCompatActivity {
 
-    private ImageView view;
-    private ImageView bg;
+    private ImageView viewSVG;
+    private ImageView ViewBG;
+    private TextView viewMeaning;
+    private TextView viewReadings;
 
     private DatabaseOpenHelper db;
-    private String kanji;
     private int size;
+    private int thickness = 5;
+
+    private Kanji kanji;
+    private ArrayList<KanjiMeaning> meanings;
+    private ArrayList<Word> words;
     private ArrayList<Stroke> strokes;
 
     @Override
@@ -34,72 +54,96 @@ public class KanjiView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kanji_view);
 
-        view = findViewById(R.id.imageView);
-        bg = findViewById(R.id.kanjiViewBG);
+        viewSVG = findViewById(R.id.imageView);
+        ViewBG = findViewById(R.id.kanjiViewBG);
+        viewMeaning = findViewById(R.id.kanjiViewMeaning);
+        viewReadings = findViewById(R.id.kanjiViewReadings);
+
         db = new DatabaseOpenHelper(getApplicationContext());
 
         Intent intent = getIntent();
-        kanji = intent.getStringExtra("symbol");
+        getKanjiInformation(intent.getStringExtra("symbol"));
+        viewMeaning.setText(kanji.getMeaningsString(""));
+        viewReadings.setText(kanji.getReadingsString(""));
 
-        ViewTreeObserver viewTreeObserver = bg.getViewTreeObserver();
+        getStrokes();
+
+        ViewTreeObserver viewTreeObserver = ViewBG.getViewTreeObserver();
         if (viewTreeObserver.isAlive()) {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    bg.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    size = (int)(bg.getWidth());
+                    ViewBG.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    size = (int)(ViewBG.getWidth());
                     openSVG();
                 }
             });
         }
     }
 
-    @SuppressLint("Range")
+    public void getKanjiInformation(String symbol) {
+        db.openDatabase();
+        Cursor c = db.handleQuery("SELECT * FROM kanji WHERE symbol = '" + symbol + "';");
+        kanji = new DatabaseModelLoader().getKanjiFromCursor(c).get(0);
+        c = db.handleQuery("SELECT * FROM kanjimeaning WHERE Kanji_symbol = '" + symbol + "';");
+        kanji.setMeanings(new DatabaseModelLoader().getMeaningsFromCursor(c));
+        c = db.handleQuery("SELECT * FROM reading WHERE Kanji_symbol = '" + symbol + "';");
+        kanji.setReadings(new DatabaseModelLoader().getReadingsFromCursor(c));
+        db.closeDatabase();
+    }
+
     public void getStrokes() {
         db.openDatabase();
-        strokes = new ArrayList<Stroke>();
-        Cursor c = db.handleQuery("SELECT * FROM stroke WHERE Kanji_symbol = '" + kanji + "';");
-        c.moveToFirst();
-        for (int i = 0; i < c.getCount(); i += 1) {
-            String SID = c.getString(c.getColumnIndex("SID"));
-            String strokeInformation = c.getString(c.getColumnIndex("strokeInformation"));
-            int number = c.getInt(c.getColumnIndex("number"));
-            String symbol = c.getString(c.getColumnIndex("Kanji_symbol"));
-            String component = c.getString(c.getColumnIndex("component"));
-            strokes.add(new Stroke(SID, strokeInformation, number, symbol, component));
-            c.moveToNext();
+        Cursor c = db.handleQuery("SELECT * FROM stroke WHERE Kanji_symbol = '" + kanji.getSymbol() + "';");
+        strokes = new DatabaseModelLoader().getStrokesFromCursor(c);
+        for (int i = 0; i < strokes.size(); i += 1) {
+            c = db.handleQuery("SELECT * FROM bezier WHERE SID = " + strokes.get(i).getSID());
+            strokes.get(i).setBeziers(new DatabaseModelLoader().getBeziersFromCursor(c));
         }
-        c.close();
         db.closeDatabase();
     }
 
     public void openSVG() {
+        openSVG(strokes.size(), 0);
+    }
+
+    public void openSVG(int untilStroke, double lastStrokePercentage) {
         try {
-            SVG svg = SVG.getFromString(getSVGString());
+            SVG svg = SVG.getFromString(getSVGString(untilStroke, lastStrokePercentage));
             DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            Log.d("db","size: " + size);
             svg.setDocumentWidth(size);
             svg.setDocumentHeight(size);
             PictureDrawable pd = new PictureDrawable(svg.renderToPicture());
-            view.setImageDrawable(pd);
+            viewSVG.setImageDrawable(pd);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public String getSVGString() {
-        getStrokes();
+    public String getSVGString(int untilStroke, double lastStrokeLength) {
         String ret = "";
-
         ret += "<svg height=\"109\" viewBox=\"0 0 109 109\">";
-        ret += "<g id=\"kvg:StrokePaths_0660e\" style=\"fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;\">";
+        ret += "<g id=\"kvg:StrokePaths_0660e\" style=\"fill:none;stroke:#000000;stroke-width:" + thickness + ";stroke-linecap:round;stroke-linejoin:round;\">";
         for(int i = 0; i < strokes.size(); i += 1) {
-            ret += "<path d=\""+ strokes.get(i).getStrokeInformation() + "\"/>";
+            if (i <= untilStroke) {
+                if (i == untilStroke) {
+                    ret += "<path d = '" + strokes.get(i).getSVGString() + "' stroke-dasharray = '" + strokes.get(i).getLength() +
+                            "' stroke-dashoffset = '" + lastStrokeLength + "'  />";
+                } else {
+                    ret += "<path d = '" + strokes.get(i).getSVGString() + "' />";
+                }
+            }
         }
         ret += "</g>";
         ret += "</svg>";
 
         return ret;
+    }
+
+    public void animate(View v) {
+
+        Thread t = new Thread(new KanjiAnimator(this, strokes, 5, 1));
+        t.start();
     }
 }

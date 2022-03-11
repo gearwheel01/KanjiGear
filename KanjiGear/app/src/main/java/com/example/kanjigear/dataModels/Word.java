@@ -46,6 +46,8 @@ public class Word {
 
     public void setTranslations(ArrayList<WordTranslation> t) {wordTranslations = t;}
 
+    public ArrayList<WordTranslation> getWordTranslations() {return wordTranslations;}
+
     // empty string for no lang criteria
     public String getTranslationString(String lang) {
         String ret = "";

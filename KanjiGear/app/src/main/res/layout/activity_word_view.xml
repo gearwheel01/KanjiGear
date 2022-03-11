@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@+id/wordViewWord" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/wordViewListKanji"
+        android:id="@+id/kanjiViewListWords"
         android:layout_width="wrap_content"
         android:layout_height="62dp"
         android:layout_marginStart="16dp"
@@ -51,7 +51,7 @@
         android:outlineProvider="paddedBounds"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="@+id/kanjiViewWordsBG" />
 
     <TextView
         android:id="@+id/textView2"
@@ -59,12 +59,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:text="used Kanji"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@+id/kanjiViewWordsBG"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/kanjiViewWordsBG"
         android:layout_width="320dp"
         android:layout_height="78dp"
         android:layout_marginTop="80dp"
