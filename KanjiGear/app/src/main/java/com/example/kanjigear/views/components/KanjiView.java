@@ -42,7 +42,7 @@ public class KanjiView extends AppCompatActivity {
 
     private DatabaseOpenHelper db;
     private int size;
-    private int thickness = 5;
+    private double thickness = 5;
 
     private Kanji kanji;
     private ArrayList<KanjiMeaning> meanings;
@@ -82,7 +82,7 @@ public class KanjiView extends AppCompatActivity {
     }
 
     public void getKanjiInformation(String symbol) {
-        db.openDatabase();
+        db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT * FROM kanji WHERE symbol = '" + symbol + "';");
         kanji = new DatabaseModelLoader().getKanjiFromCursor(c).get(0);
         c = db.handleQuery("SELECT * FROM kanjimeaning WHERE Kanji_symbol = '" + symbol + "';");
@@ -93,7 +93,7 @@ public class KanjiView extends AppCompatActivity {
     }
 
     public void getStrokes() {
-        db.openDatabase();
+        db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT * FROM stroke WHERE Kanji_symbol = '" + kanji.getSymbol() + "';");
         strokes = new DatabaseModelLoader().getStrokesFromCursor(c);
         for (int i = 0; i < strokes.size(); i += 1) {
@@ -143,7 +143,7 @@ public class KanjiView extends AppCompatActivity {
 
     public void animate(View v) {
 
-        Thread t = new Thread(new KanjiAnimator(this, strokes, 5, 1));
+        Thread t = new Thread(new KanjiAnimator(this, strokes, 20, 2));
         t.start();
     }
 }

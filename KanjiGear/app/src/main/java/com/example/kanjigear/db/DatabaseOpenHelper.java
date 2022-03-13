@@ -79,6 +79,10 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         myDb = SQLiteDatabase.openDatabase(getFilePath(), null, SQLiteDatabase.OPEN_READWRITE);
     }
 
+    public void openDatabaseRead() throws SQLException {
+        myDb = SQLiteDatabase.openDatabase(getFilePath(), null, SQLiteDatabase.OPEN_READONLY);
+    }
+
     public void closeDatabase() {
         if (myDb != null) {
             myDb.close();

@@ -5,19 +5,24 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Word;
-import com.example.kanjigear.dataModels.WordTranslation;
+import com.example.kanjigear.dataModels.WordMeaning;
 import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
+import com.example.kanjigear.db.DictWordSearch;
+import com.example.kanjigear.db.LoadDatabaseAsync;
+import com.example.kanjigear.views.MainActivity;
 import com.example.kanjigear.views.components.WordView;
 
 import java.util.ArrayList;
@@ -25,23 +30,25 @@ import java.util.Locale;
 
 public class Dictionary extends AppCompatActivity {
 
-    private DatabaseOpenHelper db;
-
     private RecyclerView list;
     private ArrayList<Word> words;
     private EditText search;
+    private DictWordSearch searchThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dictionary);
 
-        db = new DatabaseOpenHelper(getApplicationContext());
         list = findViewById(R.id.wordsList);
         search = findViewById(R.id.search);
+        words = new ArrayList<>();
+        searchThread = null;
+
 
         list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         list.setItemAnimator(new DefaultItemAnimator());
+
         setAdapter();
 
         search.addTextChangedListener(new TextWatcher() {
@@ -57,17 +64,18 @@ public class Dictionary extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                setAdapter();
+                if (searchThread != null) {
+                    searchThread.interrupt();
+                }
+                startSearch();
             }
         });
     }
 
-    private void setAdapter() {
-        getWords(String.valueOf(search.getText()));
+    public void setAdapter() {
         RecyclerAdapterWord adapter = new RecyclerAdapterWord(this, words);
         list.setAdapter(adapter);
     }
-
 
     public void openWord(String WID) {
         Intent intent = new Intent(this, WordView.class);
@@ -75,32 +83,20 @@ public class Dictionary extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void getWords(String searchString) {
-        words = new ArrayList<Word>();
-        if (searchString.length() > 0) {
-            searchString = searchString.toUpperCase(Locale.ROOT);
-            db.openDatabase();
-            ArrayList<Cursor> cl = new ArrayList<Cursor>();
-            cl.add(db.handleQuery("SELECT * FROM word WHERE word LIKE '" + searchString + "%' OR pronunciation LIKE '" +
-                    searchString + "%' OR UPPER(romaji) LIKE '" + searchString + "%' LIMIT 10;"));
-            cl.add(db.handleQuery("SELECT w.* FROM word w, wordmeaning m WHERE m.Word_WID = w.WID AND UPPER(m.meaning) LIKE '" + searchString + "%' LIMIT 10;"));
-
-            for (int i = 0; i < cl.size(); i += 1) {
-                Cursor c = cl.get(i);
-                DatabaseModelLoader loader = new DatabaseModelLoader();
-                words.addAll(loader.getWordsFromCursor(c));
-            }
-            db.closeDatabase();
-            addTranslationsToWords();
-        }
+    public void startSearch() {
+        searchThread = new DictWordSearch(this, String.valueOf(search.getText()));
+        searchThread.start();
     }
 
-    public void addTranslationsToWords() {
-        db.openDatabase();
-        for (int i = 0; i < words.size(); i += 1) {
-            Cursor c = db.handleQuery("SELECT * FROM wordmeaning WHERE Word_WID = '" + words.get(i).getWID() + "';");
-            words.get(i).setTranslations(new DatabaseModelLoader().getWordTranslationsFromCursor(c));
-        }
-        db.closeDatabase();
+    public void setWords(ArrayList<Word> w) {
+        words = w;
     }
+
+    public final Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            searchThread = null;
+            setAdapter();
+        }
+    };
+
 }

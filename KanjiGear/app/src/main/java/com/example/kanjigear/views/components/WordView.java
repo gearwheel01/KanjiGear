@@ -40,8 +40,8 @@ public class WordView extends AppCompatActivity {
         viewDetails = findViewById(R.id.wordViewDetails);
 
         loadWord(intent.getStringExtra("WID"));
-        viewTitle.setText(word.getWord());
-        viewDetails.setText(word.getPronunciation() + " - " + word.getTranslationString(""));
+        viewTitle.setText(word.getWordWritings().get(0));
+        viewDetails.setText(word.getWordReadings().get(0));
 
         viewListKanji.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         viewListKanji.setItemAnimator(new DefaultItemAnimator());
@@ -56,16 +56,20 @@ public class WordView extends AppCompatActivity {
     }
 
     public void loadWord(String WID) {
-        db.openDatabase();
+        db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT * FROM word WHERE WID = '" + WID + "';");
         word = new DatabaseModelLoader().getWordsFromCursor(c).get(0);
+        word.setWordWritings(new DatabaseModelLoader().getWordWritingsFromCursor(db.handleQuery("SELECT * FROM wordwriting WHERE Word_WID = " + WID + ";")));
+        word.setWordReadings(new DatabaseModelLoader().getWordReadingsFromCursor(db.handleQuery("SELECT * FROM wordreading WHERE Word_WID = " + WID + ";")));
 
         c = db.handleQuery("SELECT * FROM wordmeaning WHERE WMID = '" + word.getWID() + "';");
-        word.setTranslations(new DatabaseModelLoader().getWordTranslationsFromCursor(c));
+        word.setTranslations(new DatabaseModelLoader().getWordMeaningsFromCursor(c));
 
         c = db.handleQuery("SELECT k.* FROM kanji k, wordwrittenwithkanji w WHERE k.symbol = w.Kanji_symbol AND w.Word_WID = " + word.getWID() + ";");
         kanjiInWord = new DatabaseModelLoader().getKanjiFromCursor(c);
 
         db.closeDatabase();
     }
+
+
 }

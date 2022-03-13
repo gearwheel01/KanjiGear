@@ -46,7 +46,7 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapterWord.wordViewHolder holder, int position) {
-        holder.word.setText(words.get(position).getWord() + "(" + words.get(position).getPronunciation() + ")");
+        holder.word.setText(words.get(position).getWordWritings().get(0) + "(" + words.get(position).getWordReadings().get(0) + ")");
         holder.translation.setText(words.get(position).getTranslationString(""));
         holder.bg.setOnClickListener(l -> {
             context.openWord(words.get(position).getWID());

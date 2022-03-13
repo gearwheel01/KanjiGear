@@ -98,6 +98,7 @@ public class Stroke {
             }
         }
         path = p;
+
     }
 
     public float getLength() {

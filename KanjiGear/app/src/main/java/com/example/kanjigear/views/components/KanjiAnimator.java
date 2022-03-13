@@ -30,7 +30,14 @@ public class KanjiAnimator extends Thread {
                     e.printStackTrace();
                 }
             }
+            view.openSVG(s, 0);
+            try {
+                sleep(sleepTime * 5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        view.openSVG();
     }
 
 

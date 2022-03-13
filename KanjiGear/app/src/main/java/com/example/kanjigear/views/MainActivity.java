@@ -9,6 +9,7 @@ import android.view.View;
 import com.example.kanjigear.R;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.db.LoadDatabaseAsync;
+import com.example.kanjigear.views.components.KanjiView;
 import com.example.kanjigear.views.dictionary.Dictionary;
 import com.example.kanjigear.views.studyLists.StudyLists;
 
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openQuickLesson(View v) {
+        Intent intent = new Intent(this, KanjiView.class);
+        intent.putExtra("symbol", "丗");
+        startActivity(intent);
     }
 
     public void openStudyLists(View v) {

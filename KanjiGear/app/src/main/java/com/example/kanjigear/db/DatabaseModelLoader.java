@@ -15,12 +15,9 @@ public class DatabaseModelLoader {
         c.moveToFirst();
         for (int i = 0; i < c.getCount(); i += 1) {
             String WID = c.getString(c.getColumnIndex("WID"));
-            String word = c.getString(c.getColumnIndex("word"));
             String grade = c.getString(c.getColumnIndex("grade"));
             int learningProgress = c.getInt(c.getColumnIndex("learningProgress"));
-            String pronunciation = c.getString(c.getColumnIndex("pronunciation"));
-            String romaji = c.getString(c.getColumnIndex("romaji"));
-            words.add(new Word(WID, word, grade, learningProgress, pronunciation, romaji));
+            words.add(new Word(WID, grade, learningProgress));
             c.moveToNext();
         }
         c.close();
@@ -28,14 +25,38 @@ public class DatabaseModelLoader {
     }
 
     @SuppressLint("Range")
-    public ArrayList<WordTranslation> getWordTranslationsFromCursor(Cursor c) {
-        ArrayList<WordTranslation> translations = new ArrayList<>();
+    public ArrayList<String> getWordReadingsFromCursor(Cursor c) {
+        ArrayList<String> readings = new ArrayList<>();
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i += 1) {
+            readings.add(c.getString(c.getColumnIndex("reading")));
+            c.moveToNext();
+        }
+        c.close();
+        return readings;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<String> getWordWritingsFromCursor(Cursor c) {
+        ArrayList<String> writings = new ArrayList<>();
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i += 1) {
+            writings.add(c.getString(c.getColumnIndex("writing")));
+            c.moveToNext();
+        }
+        c.close();
+        return writings;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<WordMeaning> getWordMeaningsFromCursor(Cursor c) {
+        ArrayList<WordMeaning> translations = new ArrayList<>();
         c.moveToFirst();
         for (int i = 0; i < c.getCount(); i += 1) {
             String WMID = c.getString(c.getColumnIndex("WMID"));
             String translation = c.getString(c.getColumnIndex("meaning"));
             String language = c.getString(c.getColumnIndex("language"));
-            translations.add(new WordTranslation(WMID, translation, language));
+            translations.add(new WordMeaning(WMID, translation, language));
             c.moveToNext();
         }
         c.close();

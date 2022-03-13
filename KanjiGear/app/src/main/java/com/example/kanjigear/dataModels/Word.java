@@ -5,29 +5,26 @@ import java.util.ArrayList;
 public class Word {
 
     private String WID;
-    private String word;
     private String grade;
     private int learningProgress;
-    private String pronunciation;
-    private String romaji;
-    private ArrayList<WordTranslation> wordTranslations;
 
-    public Word(String WID, String word, String grade, int learningProgress, String pronunciation, String romaji)
+    private ArrayList<String> wordWritings;
+    private ArrayList<String> wordReadings;
+    private ArrayList<WordMeaning> wordTranslations;
+
+    public Word(String WID, String grade, int learningProgress)
     {
         this.WID = WID;
-        this.word = word;
         this.grade = grade;
         this.learningProgress = learningProgress;
-        this.pronunciation = pronunciation;
+
         wordTranslations = new ArrayList<>();
+        wordReadings = new ArrayList<>();
+        wordWritings = new ArrayList<>();
     }
 
     public String getWID() {
         return WID;
-    }
-
-    public String getWord() {
-        return word;
     }
 
     public String getGrade() {
@@ -38,15 +35,9 @@ public class Word {
         return learningProgress;
     }
 
-    public String getPronunciation() {
-        return pronunciation;
-    }
+    public void setTranslations(ArrayList<WordMeaning> t) {wordTranslations = t;}
 
-    public String getRomaji() {return romaji;}
-
-    public void setTranslations(ArrayList<WordTranslation> t) {wordTranslations = t;}
-
-    public ArrayList<WordTranslation> getWordTranslations() {return wordTranslations;}
+    public ArrayList<WordMeaning> getWordTranslations() {return wordTranslations;}
 
     // empty string for no lang criteria
     public String getTranslationString(String lang) {
@@ -56,10 +47,25 @@ public class Word {
                 if (!ret.equals("")) {
                     ret += ", ";
                 }
-                ret += wordTranslations.get(i).getTranslation();
+                ret += wordTranslations.get(i).getMeaning();
             }
         }
         return ret;
     }
 
+    public ArrayList<String> getWordWritings() {
+        return wordWritings;
+    }
+
+    public void setWordWritings(ArrayList<String> wordWritings) {
+        this.wordWritings = wordWritings;
+    }
+
+    public ArrayList<String> getWordReadings() {
+        return wordReadings;
+    }
+
+    public void setWordReadings(ArrayList<String> wordReadings) {
+        this.wordReadings = wordReadings;
+    }
 }

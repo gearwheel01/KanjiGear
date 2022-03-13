@@ -57,7 +57,7 @@ public class StudyListDetails extends AppCompatActivity {
     }
 
     public void getStudyList(String SLID) {
-        db.openDatabase();
+        db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT name FROM studylist WHERE SLID = '" + SLID + "';");
         c.moveToFirst();
         list = new StudyList(SLID, c.getString(0));
@@ -82,7 +82,7 @@ public class StudyListDetails extends AppCompatActivity {
 
     @SuppressLint("Range")
     public void getWordsInList(String SLID) {
-        db.openDatabase();
+        db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT w.* FROM word w,listcontainsword l WHERE w.WID=l.Word_WID AND l.StudyList_SLID=" + SLID + ";");
         wordsInList = new DatabaseModelLoader().getWordsFromCursor(c);
         c.close();
