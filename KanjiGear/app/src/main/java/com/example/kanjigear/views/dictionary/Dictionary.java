@@ -45,7 +45,6 @@ public class Dictionary extends AppCompatActivity {
         words = new ArrayList<>();
         searchThread = null;
 
-
         list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         list.setItemAnimator(new DefaultItemAnimator());
 

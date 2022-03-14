@@ -1,5 +1,6 @@
 package com.example.kanjigear.db;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Message;
@@ -19,34 +20,36 @@ public class DictWordSearch extends Thread {
 
     private Dictionary dictionary;
     private String searchString;
-    private DatabaseOpenHelper db;
     private boolean stopped = false;
 
     public DictWordSearch(Dictionary d, String s) {
         dictionary = d;
         searchString = s;
-        db = new DatabaseOpenHelper(d.getApplicationContext());
     }
 
+    @SuppressLint("Range")
     @Override
     public void run() {
+        DatabaseOpenHelper db = new DatabaseOpenHelper(dictionary.getApplicationContext());
+        Cursor c;
         db.openDatabaseRead();
+        db.handleQuery("PRAGMA case_sensitive_like = ON;");
         ArrayList<Word> words = new ArrayList<>();
         if (searchString.length() > 0) {
-            searchString = searchString.toUpperCase(Locale.ROOT);
-            ArrayList<Cursor> cl = new ArrayList<Cursor>();
-            cl.add(db.handleQuery("SELECT w.* FROM word w, wordwriting ww WHERE ww.Word_WID = w.WID AND UPPER(ww.writing) LIKE '" + searchString + "%' ORDER BY length(ww.writing) LIMIT 10;"));
-            cl.add(db.handleQuery("SELECT w.* FROM word w, wordreading wr WHERE wr.Word_WID = w.WID AND UPPER(wr.reading) LIKE '" + searchString + "%' ORDER BY length(wr.reading) LIMIT 10;"));
-            cl.add(db.handleQuery("SELECT w.* FROM word w, wordmeaning m WHERE m.Word_WID = w.WID AND UPPER(m.meaning) LIKE '" + searchString + "%' ORDER BY length(m.meaning) LIMIT 10;"));
+            ArrayList<Cursor> cl = new ArrayList<>();
+            cl.add(db.handleQuery("SELECT Word_WID FROM wordwriting ww WHERE ww.writing LIKE '" + searchString + "%' ORDER BY length(ww.writing) LIMIT 100;"));
+            cl.add(db.handleQuery("SELECT Word_WID FROM wordreading wr WHERE wr.reading LIKE '" + searchString + "%' ORDER BY length(wr.reading) LIMIT 100;"));
+            cl.add(db.handleQuery("SELECT Word_WID FROM wordmeaning m WHERE m.meaning LIKE '" + searchString + "%' ORDER BY length(m.meaning) LIMIT 100;"));
 
             for (int i = 0; i < cl.size(); i += 1) {
-                Cursor c = cl.get(i);
-                DatabaseModelLoader loader = new DatabaseModelLoader();
-                words.addAll(loader.getWordsFromCursor(c));
+                while (cl.get(i).moveToNext()) {
+                    c = db.handleQuery("SELECT * FROM word WHERE WID = " + cl.get(i).getString(0) + ";");
+                    words.addAll(new DatabaseModelLoader().getWordsFromCursor(c));
+                }
             }
 
             for (int i = 0; i < words.size(); i += 1) {
-                Cursor c = db.handleQuery("SELECT * FROM wordmeaning WHERE Word_WID = '" + words.get(i).getWID() + "';");
+                c = db.handleQuery("SELECT * FROM wordmeaning WHERE Word_WID = '" + words.get(i).getWID() + "';");
                 words.get(i).setTranslations(new DatabaseModelLoader().getWordMeaningsFromCursor(c));
                 c = db.handleQuery("SELECT * FROM wordwriting WHERE Word_WID = " + words.get(i).getWID() + ";");
                 words.get(i).setWordWritings(new DatabaseModelLoader().getWordWritingsFromCursor(c));
