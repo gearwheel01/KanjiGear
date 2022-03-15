@@ -15,9 +15,9 @@ public class DatabaseModelLoader {
         c.moveToFirst();
         for (int i = 0; i < c.getCount(); i += 1) {
             String WID = c.getString(c.getColumnIndex("WID"));
-            String grade = c.getString(c.getColumnIndex("grade"));
             int learningProgress = c.getInt(c.getColumnIndex("learningProgress"));
-            words.add(new Word(WID, grade, learningProgress));
+            int frequency = c.getInt(c.getColumnIndex("frequency"));
+            words.add(new Word(WID, learningProgress, frequency));
             c.moveToNext();
         }
         c.close();
@@ -83,9 +83,11 @@ public class DatabaseModelLoader {
         c.moveToFirst();
         for (int i = 0; i < c.getCount(); i += 1) {
             String symbol = c.getString(c.getColumnIndex("symbol"));
-            String grade = c.getString(c.getColumnIndex("grade"));
+            int grade = c.getInt(c.getColumnIndex("grade"));
+            int jlpt = c.getInt(c.getColumnIndex("jlpt"));
+            int frequency = c.getInt(c.getColumnIndex("frequency"));
             int learningProgress = c.getInt(c.getColumnIndex("learningProgress"));
-            kanji.add(new Kanji(symbol,grade, learningProgress));
+            kanji.add(new Kanji(symbol,grade, jlpt, frequency, learningProgress));
             c.moveToNext();
         }
         c.close();
@@ -150,7 +152,7 @@ public class DatabaseModelLoader {
         ArrayList<Reading> readings = new ArrayList<>();
         c.moveToFirst();
         for (int i = 0; i < c.getCount(); i += 1) {
-            int RID = c.getInt(c.getColumnIndex("RID"));
+            int RID = c.getInt(c.getColumnIndex("KRID"));
             String type = c.getString(c.getColumnIndex("type"));
             String reading = c.getString(c.getColumnIndex("reading"));
             readings.add(new Reading(RID,type, reading));

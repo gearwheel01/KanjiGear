@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.kanjigear.R;
@@ -28,6 +29,10 @@ public class WordView extends AppCompatActivity {
     private TextView viewDetails;
     private RecyclerView viewListKanji;
 
+    private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
+        + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
+        +"abcdefghaijklmnopqrstuvwxvzöäüABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ1234567890<>|-_";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +45,12 @@ public class WordView extends AppCompatActivity {
         viewDetails = findViewById(R.id.wordViewDetails);
 
         loadWord(intent.getStringExtra("WID"));
-        viewTitle.setText(word.getWordWritings().get(0));
-        viewDetails.setText(word.getWordReadings().get(0));
+        if (word.getWordWritings().size() > 0) {
+            viewTitle.setText(word.getWordWritings().get(0));
+        }
+        if (word.getWordReadings().size() > 0) {
+            viewDetails.setText(word.getWordReadings().get(0));
+        }
 
         viewListKanji.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         viewListKanji.setItemAnimator(new DefaultItemAnimator());
@@ -65,10 +74,29 @@ public class WordView extends AppCompatActivity {
         c = db.handleQuery("SELECT * FROM wordmeaning WHERE WMID = '" + word.getWID() + "';");
         word.setTranslations(new DatabaseModelLoader().getWordMeaningsFromCursor(c));
 
-        c = db.handleQuery("SELECT k.* FROM kanji k, wordwrittenwithkanji w WHERE k.symbol = w.Kanji_symbol AND w.Word_WID = " + word.getWID() + ";");
-        kanjiInWord = new DatabaseModelLoader().getKanjiFromCursor(c);
+        getKanjiInWord();
 
         db.closeDatabase();
+    }
+
+    public void getKanjiInWord() {
+        kanjiInWord = new ArrayList<>();
+        ArrayList<Character> kanji = new ArrayList<>();
+        for(int i = 0; i < word.getWordWritings().size(); i += 1) {
+            String writing = word.getWordWritings().get(i);
+            for (int c = 0; c < writing.length(); c += 1) {
+                char symbol = writing.charAt(c);
+                if (!notkanjichars.contains(symbol + "")) {
+                    kanji.add(symbol);
+                }
+            }
+        }
+
+
+        for (int i = 0; i < kanji.size();  i += 1) {
+            Cursor c = db.handleQuery("SELECT * FROM kanji WHERE symbol = '" + kanji.get(i) + "';");
+            kanjiInWord.addAll(new DatabaseModelLoader().getKanjiFromCursor(c));
+        }
     }
 
 

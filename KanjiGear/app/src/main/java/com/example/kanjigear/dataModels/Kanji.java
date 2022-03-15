@@ -5,30 +5,40 @@ import java.util.ArrayList;
 public class Kanji {
 
     private String symbol;
-    private String grade;
+    private int grade;
+    private int jlpt;
+    private int frequency;
     private int learningProgress;
 
     private ArrayList<KanjiMeaning> meanings;
     private ArrayList<Reading> readings;
 
-    public Kanji(String symbol, String grade, int learningProgress) {
+    public Kanji(String symbol, int grade, int jlpt, int frequency, int learningProgress) {
         this.symbol = symbol;
         this.grade = grade;
+        this.jlpt = jlpt;
+        this.frequency = frequency;
         this.learningProgress = learningProgress;
-        meanings = new ArrayList<>();
-        readings = new ArrayList<>();
     }
 
     public String getSymbol() {
         return symbol;
     }
 
-    public String getGrade() {
+    public int getGrade() {
         return grade;
     }
 
     public int getLearningProgress() {
         return learningProgress;
+    }
+
+    public int getJlpt() {
+        return jlpt;
+    }
+
+    public int getFrequency() {
+        return frequency;
     }
 
     public ArrayList<KanjiMeaning> getMeanings() {

@@ -87,7 +87,7 @@ public class KanjiView extends AppCompatActivity {
         kanji = new DatabaseModelLoader().getKanjiFromCursor(c).get(0);
         c = db.handleQuery("SELECT * FROM kanjimeaning WHERE Kanji_symbol = '" + symbol + "';");
         kanji.setMeanings(new DatabaseModelLoader().getMeaningsFromCursor(c));
-        c = db.handleQuery("SELECT * FROM reading WHERE Kanji_symbol = '" + symbol + "';");
+        c = db.handleQuery("SELECT * FROM kanjireading WHERE Kanji_symbol = '" + symbol + "';");
         kanji.setReadings(new DatabaseModelLoader().getReadingsFromCursor(c));
         db.closeDatabase();
     }

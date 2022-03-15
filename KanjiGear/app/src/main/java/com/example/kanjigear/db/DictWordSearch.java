@@ -37,9 +37,12 @@ public class DictWordSearch extends Thread {
         ArrayList<Word> words = new ArrayList<>();
         if (searchString.length() > 0) {
             ArrayList<Cursor> cl = new ArrayList<>();
-            cl.add(db.handleQuery("SELECT Word_WID FROM wordwriting ww WHERE ww.writing LIKE '" + searchString + "%' ORDER BY length(ww.writing) LIMIT 100;"));
-            cl.add(db.handleQuery("SELECT Word_WID FROM wordreading wr WHERE wr.reading LIKE '" + searchString + "%' ORDER BY length(wr.reading) LIMIT 100;"));
-            cl.add(db.handleQuery("SELECT Word_WID FROM wordmeaning m WHERE m.meaning LIKE '" + searchString + "%' ORDER BY length(m.meaning) LIMIT 100;"));
+            cl.add(db.handleQuery("SELECT w.WID FROM wordwriting ww, word w WHERE w.WID = ww.Word_WID AND ww.writing LIKE '" + searchString + "%' " +
+                    "ORDER BY length(ww.writing), w.frequency LIMIT 50;"));
+            cl.add(db.handleQuery("SELECT w.WID FROM wordreading wr, word w WHERE w.WID = wr.Word_WID AND wr.reading LIKE '" + searchString + "%' " +
+                    "ORDER BY length(wr.reading), w.frequency LIMIT 50;"));
+            cl.add(db.handleQuery("SELECT w.WID FROM wordmeaning m, word w WHERE w.WID = m.Word_WID AND m.meaning LIKE '" + searchString + "%' " +
+                    "ORDER BY length(m.meaning) LIMIT 50;"));
 
             for (int i = 0; i < cl.size(); i += 1) {
                 while (cl.get(i).moveToNext()) {
@@ -51,8 +54,10 @@ public class DictWordSearch extends Thread {
             for (int i = 0; i < words.size(); i += 1) {
                 c = db.handleQuery("SELECT * FROM wordmeaning WHERE Word_WID = '" + words.get(i).getWID() + "';");
                 words.get(i).setTranslations(new DatabaseModelLoader().getWordMeaningsFromCursor(c));
+
                 c = db.handleQuery("SELECT * FROM wordwriting WHERE Word_WID = " + words.get(i).getWID() + ";");
                 words.get(i).setWordWritings(new DatabaseModelLoader().getWordWritingsFromCursor(c));
+
                 c = db.handleQuery("SELECT * FROM wordreading WHERE Word_WID = " + words.get(i).getWID() + ";");
                 words.get(i).setWordReadings(new DatabaseModelLoader().getWordReadingsFromCursor(c));
             }

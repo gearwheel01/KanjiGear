@@ -5,18 +5,18 @@ import java.util.ArrayList;
 public class Word {
 
     private String WID;
-    private String grade;
     private int learningProgress;
+    private int frequency;
 
     private ArrayList<String> wordWritings;
     private ArrayList<String> wordReadings;
     private ArrayList<WordMeaning> wordTranslations;
 
-    public Word(String WID, String grade, int learningProgress)
+    public Word(String WID, int learningProgress, int frequency)
     {
         this.WID = WID;
-        this.grade = grade;
         this.learningProgress = learningProgress;
+        this.frequency = frequency;
 
         wordTranslations = new ArrayList<>();
         wordReadings = new ArrayList<>();
@@ -25,10 +25,6 @@ public class Word {
 
     public String getWID() {
         return WID;
-    }
-
-    public String getGrade() {
-        return grade;
     }
 
     public int getLearningProgress() {
@@ -67,5 +63,9 @@ public class Word {
 
     public void setWordReadings(ArrayList<String> wordReadings) {
         this.wordReadings = wordReadings;
+    }
+
+    public int getFrequency() {
+        return frequency;
     }
 }
