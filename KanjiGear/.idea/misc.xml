@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/hudla/AndroidStudioProjects/KanjiGear/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/drawable/button_animation_play.xml" value="0.1915" />
+        <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/drawable/button_animation_stop.xml" value="0.1915" />
         <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/drawable/button_main.xml" value="0.207" />
         <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/drawable/button_secondary.xml" value="0.207" />
         <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/drawable/ic__660e.xml" value="0.238" />
@@ -14,7 +16,7 @@
         <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/layout/activity_study_list_details.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/layout/activity_study_lists.xml" value="0.33" />
-        <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/layout/activity_word_view.xml" value="0.5" />
+        <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/layout/activity_word_view.xml" value="0.33" />
         <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/layout/alert_dialog_copy_database.xml" value="0.228125" />
         <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/layout/content_scrolling.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/hudla/AndroidStudioProjects/ProjektKanjiGear/KanjiGear/app/src/main/res/layout/dict_word_item.xml" value="0.33" />

@@ -47,7 +47,6 @@ public class Dictionary extends AppCompatActivity {
 
         list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         list.setItemAnimator(new DefaultItemAnimator());
-
         setAdapter();
 
         search.addTextChangedListener(new TextWatcher() {

@@ -1,35 +1,34 @@
 package com.example.kanjigear.views.components;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PathMeasure;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.caverock.androidsvg.SVG;
 import com.example.kanjigear.R;
-import com.example.kanjigear.dataModels.Bezier;
 import com.example.kanjigear.dataModels.Kanji;
 import com.example.kanjigear.dataModels.KanjiMeaning;
 import com.example.kanjigear.dataModels.Stroke;
 import com.example.kanjigear.dataModels.Word;
+import com.example.kanjigear.db.DatabaseContentLoader;
 import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
+import com.example.kanjigear.views.dictionary.RecyclerAdapterWord;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
@@ -38,7 +37,11 @@ public class KanjiView extends AppCompatActivity {
     private ImageView viewSVG;
     private ImageView ViewBG;
     private TextView viewMeaning;
-    private TextView viewReadings;
+    private TextView viewKUN;
+    private TextView viewON;
+    private Button viewAnimate;
+    private RecyclerView viewWords;
+    private TabLayout viewWordTabs;
 
     private DatabaseOpenHelper db;
     private int size;
@@ -46,8 +49,11 @@ public class KanjiView extends AppCompatActivity {
 
     private Kanji kanji;
     private ArrayList<KanjiMeaning> meanings;
-    private ArrayList<Word> words;
+    private ArrayList<Word> wordsLearned;
+    private ArrayList<Word> wordsNew;
+
     private ArrayList<Stroke> strokes;
+    KanjiAnimator animator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,16 +63,26 @@ public class KanjiView extends AppCompatActivity {
         viewSVG = findViewById(R.id.imageView);
         ViewBG = findViewById(R.id.kanjiViewBG);
         viewMeaning = findViewById(R.id.kanjiViewMeaning);
-        viewReadings = findViewById(R.id.kanjiViewReadings);
+        viewKUN = findViewById(R.id.kanjiViewKUN);
+        viewON = findViewById(R.id.kanjiViewON);
+        viewAnimate = findViewById(R.id.kanjiViewAnimate);
+        viewWords = findViewById(R.id.kanjiViewListWords);
+        viewWordTabs = findViewById(R.id.kanjiViewTab);
 
         db = new DatabaseOpenHelper(getApplicationContext());
 
         Intent intent = getIntent();
         getKanjiInformation(intent.getStringExtra("symbol"));
         viewMeaning.setText(kanji.getMeaningsString(""));
-        viewReadings.setText(kanji.getReadingsString(""));
+        viewKUN.setText(kanji.getReadingsString("KUN"));
+        viewON.setText(kanji.getReadingsString("ON"));
 
         getStrokes();
+        loadWords();
+
+        viewWords.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        viewWords.setItemAnimator(new DefaultItemAnimator());
+        setAdapter(wordsLearned);
 
         ViewTreeObserver viewTreeObserver = ViewBG.getViewTreeObserver();
         if (viewTreeObserver.isAlive()) {
@@ -79,6 +95,27 @@ public class KanjiView extends AppCompatActivity {
                 }
             });
         }
+        
+        viewWordTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getText().equals(getResources().getString(R.string.kanjiViewTabNew))) {
+                    setAdapter(wordsNew);
+                } else {
+                    setAdapter(wordsLearned);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     public void getKanjiInformation(String symbol) {
@@ -142,8 +179,49 @@ public class KanjiView extends AppCompatActivity {
     }
 
     public void animate(View v) {
+        if (animator == null) {
+            animator = new KanjiAnimator(this, strokes, 20, 3);
+            animator.start();
+            viewAnimate.setBackgroundResource(R.drawable.button_animation_stop);
+        } else {
+            stopAnimation();
+        }
+    }
 
-        Thread t = new Thread(new KanjiAnimator(this, strokes, 20, 2));
-        t.start();
+    public void stopAnimation() {
+        if (animator != null) {
+            animator.interrupt();
+            openSVG();
+            animator = null;
+            viewAnimate.setBackgroundResource(R.drawable.button_animation_play);
+        }
+    }
+
+    public void loadWords() {
+        db.openDatabaseRead();
+
+        Cursor c = db.handleQuery("SELECT * FROM word w, wordwriting ww " +
+                "WHERE ww.Word_WID = w.WID AND ww.writing LIKE '%" + kanji.getSymbol() + "%' AND w.learningProgress > 0 " +
+                "ORDER BY w.frequency DESC LIMIT 10;");
+        wordsLearned = new DatabaseModelLoader().getWordsFromCursor(c);
+        wordsLearned = new DatabaseContentLoader().addDetailsToWords(db, wordsLearned);
+        c = db.handleQuery("SELECT * FROM word w, wordwriting ww " +
+                "WHERE ww.Word_WID = w.WID AND ww.writing LIKE '%" + kanji.getSymbol() + "%' AND w.learningProgress == 0 " +
+                "ORDER BY w.frequency DESC LIMIT 10;");
+        wordsNew = new DatabaseModelLoader().getWordsFromCursor(c);
+        wordsNew = new DatabaseContentLoader().addDetailsToWords(db, wordsNew);
+
+        db.close();
+    }
+    
+    public void setAdapter(ArrayList<Word> words) {
+        RecyclerAdapterWord adapter = new RecyclerAdapterWord(this, words);
+        viewWords.setAdapter(adapter);
+    }
+
+    public void openWord(String WID) {
+        Intent intent = new Intent(this, WordView.class);
+        intent.putExtra("WID", WID);
+        startActivity(intent);
     }
 }

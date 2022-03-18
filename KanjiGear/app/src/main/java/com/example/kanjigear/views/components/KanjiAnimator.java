@@ -27,17 +27,17 @@ public class KanjiAnimator extends Thread {
                 try {
                     sleep(sleepTime);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    return;
                 }
             }
             view.openSVG(s, 0);
             try {
-                sleep(sleepTime * 5);
+                sleep(sleepTime * 6);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                return;
             }
         }
-        view.openSVG();
+        view.stopAnimation();
     }
 
 

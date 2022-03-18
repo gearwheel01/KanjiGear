@@ -11,16 +11,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Word;
+import com.example.kanjigear.views.components.KanjiView;
 
 import java.util.ArrayList;
 
 public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWord.wordViewHolder> {
 
     private ArrayList<Word> words;
-    private Dictionary context;
+    private Dictionary contextDictionary = null;
+    private KanjiView contextKanji = null;
 
-    public RecyclerAdapterWord(Dictionary context, ArrayList<Word> words) {
-        this.context = context;
+    public RecyclerAdapterWord(Dictionary contextDictionary, ArrayList<Word> words) {
+        this.contextDictionary = contextDictionary;
+        this.words = words;
+    }
+
+    public RecyclerAdapterWord(KanjiView contextKanji, ArrayList<Word> words) {
+        this.contextKanji = contextKanji;
         this.words = words;
     }
 
@@ -47,12 +54,19 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapterWord.wordViewHolder holder, int position) {
         Word w = words.get(position);
-        if ( (w.getWordReadings().size() > 0) && (w.getWordWritings().size() > 0) ) {
+        if (w.getWordWritings().size() > 0) {
             holder.word.setText(w.getWordWritings().get(0) + "(" + w.getWordReadings().get(0) + ")");
+        } else {
+            holder.word.setText(w.getWordReadings().get(0));
         }
         holder.translation.setText(words.get(position).getTranslationString(""));
         holder.bg.setOnClickListener(l -> {
-            context.openWord(words.get(position).getWID());
+            if (contextDictionary != null) {
+                contextDictionary.openWord(words.get(position).getWID());
+            }
+            if (contextKanji != null) {
+                contextKanji.openWord(words.get(position).getWID());
+            }
         });
     }
 

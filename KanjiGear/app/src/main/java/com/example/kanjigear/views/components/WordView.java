@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.example.kanjigear.R;
@@ -26,7 +25,8 @@ public class WordView extends AppCompatActivity {
     private DatabaseOpenHelper db;
 
     private TextView viewTitle;
-    private TextView viewDetails;
+    private TextView viewReading;
+    private TextView viewMeaning;
     private RecyclerView viewListKanji;
 
     private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
@@ -42,15 +42,17 @@ public class WordView extends AppCompatActivity {
         db = new DatabaseOpenHelper(getApplicationContext());
         viewTitle = findViewById(R.id.wordViewWord);
         viewListKanji = findViewById(R.id.kanjiViewListWords);
-        viewDetails = findViewById(R.id.wordViewDetails);
+        viewReading = findViewById(R.id.wordViewReading);
+        viewMeaning = findViewById(R.id.wordViewMeaning);
 
         loadWord(intent.getStringExtra("WID"));
         if (word.getWordWritings().size() > 0) {
             viewTitle.setText(word.getWordWritings().get(0));
         }
         if (word.getWordReadings().size() > 0) {
-            viewDetails.setText(word.getWordReadings().get(0));
+            viewReading.setText(word.getWordReadings().get(0));
         }
+        viewMeaning.setText(word.getTranslationString(""));
 
         viewListKanji.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         viewListKanji.setItemAnimator(new DefaultItemAnimator());
@@ -71,7 +73,7 @@ public class WordView extends AppCompatActivity {
         word.setWordWritings(new DatabaseModelLoader().getWordWritingsFromCursor(db.handleQuery("SELECT * FROM wordwriting WHERE Word_WID = " + WID + ";")));
         word.setWordReadings(new DatabaseModelLoader().getWordReadingsFromCursor(db.handleQuery("SELECT * FROM wordreading WHERE Word_WID = " + WID + ";")));
 
-        c = db.handleQuery("SELECT * FROM wordmeaning WHERE WMID = '" + word.getWID() + "';");
+        c = db.handleQuery("SELECT * FROM wordmeaning WHERE Word_WID = '" + word.getWID() + "';");
         word.setTranslations(new DatabaseModelLoader().getWordMeaningsFromCursor(c));
 
         getKanjiInWord();
@@ -86,7 +88,7 @@ public class WordView extends AppCompatActivity {
             String writing = word.getWordWritings().get(i);
             for (int c = 0; c < writing.length(); c += 1) {
                 char symbol = writing.charAt(c);
-                if (!notkanjichars.contains(symbol + "")) {
+                if ( (!notkanjichars.contains(symbol + "")) && (!kanji.contains(symbol)) ) {
                     kanji.add(symbol);
                 }
             }

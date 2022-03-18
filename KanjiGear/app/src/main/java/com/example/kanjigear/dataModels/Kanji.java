@@ -74,9 +74,9 @@ public class Kanji {
     public String getReadingsString(String type) {
         String ret = "";
         for (int i = 0; i < readings.size(); i += 1) {
-            if ( (type.equals("")) || (type.equals(readings.get(i).getReading())) ) {
+            if ( (type.equals("")) || (type.equals(readings.get(i).getType())) ) {
                 if (!ret.equals("")) {
-                    ret += ", ";
+                    ret += "\n";
                 }
                 ret += readings.get(i).getReading();
             }
