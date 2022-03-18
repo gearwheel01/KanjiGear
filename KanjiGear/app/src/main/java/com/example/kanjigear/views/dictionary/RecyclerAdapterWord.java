@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Word;
 import com.example.kanjigear.views.components.KanjiView;
+import com.example.kanjigear.views.components.SentenceView;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,7 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
     private ArrayList<Word> words;
     private Dictionary contextDictionary = null;
     private KanjiView contextKanji = null;
+    private SentenceView contextSentence = null;
 
     public RecyclerAdapterWord(Dictionary contextDictionary, ArrayList<Word> words) {
         this.contextDictionary = contextDictionary;
@@ -28,6 +30,11 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
 
     public RecyclerAdapterWord(KanjiView contextKanji, ArrayList<Word> words) {
         this.contextKanji = contextKanji;
+        this.words = words;
+    }
+
+    public RecyclerAdapterWord(SentenceView contextSentence, ArrayList<Word> words) {
+        this.contextSentence = contextSentence;
         this.words = words;
     }
 
@@ -47,7 +54,7 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
     @NonNull
     @Override
     public RecyclerAdapterWord.wordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dict_word, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comp_word, parent, false);
         return new wordViewHolder(itemView);
     }
 
@@ -62,10 +69,13 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
         holder.translation.setText(words.get(position).getTranslationString(""));
         holder.bg.setOnClickListener(l -> {
             if (contextDictionary != null) {
-                contextDictionary.openWord(words.get(position).getWID());
+                contextDictionary.openWord(w.getWID());
             }
             if (contextKanji != null) {
-                contextKanji.openWord(words.get(position).getWID());
+                contextKanji.openWord(w.getWID());
+            }
+            if (contextSentence != null) {
+                contextSentence.openWord(w.getWID());
             }
         });
     }

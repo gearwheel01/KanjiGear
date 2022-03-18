@@ -10,12 +10,10 @@ import android.database.Cursor;
 import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.caverock.androidsvg.SVG;
@@ -66,7 +64,7 @@ public class KanjiView extends AppCompatActivity {
         viewKUN = findViewById(R.id.kanjiViewKUN);
         viewON = findViewById(R.id.kanjiViewON);
         viewAnimate = findViewById(R.id.kanjiViewAnimate);
-        viewWords = findViewById(R.id.kanjiViewListWords);
+        viewWords = findViewById(R.id.kanjiViewListKanji);
         viewWordTabs = findViewById(R.id.kanjiViewTab);
 
         db = new DatabaseOpenHelper(getApplicationContext());
@@ -123,7 +121,7 @@ public class KanjiView extends AppCompatActivity {
         Cursor c = db.handleQuery("SELECT * FROM kanji WHERE symbol = '" + symbol + "';");
         kanji = new DatabaseModelLoader().getKanjiFromCursor(c).get(0);
         c = db.handleQuery("SELECT * FROM kanjimeaning WHERE Kanji_symbol = '" + symbol + "';");
-        kanji.setMeanings(new DatabaseModelLoader().getMeaningsFromCursor(c));
+        kanji.setMeanings(new DatabaseModelLoader().getKanjiMeaningsFromCursor(c));
         c = db.handleQuery("SELECT * FROM kanjireading WHERE Kanji_symbol = '" + symbol + "';");
         kanji.setReadings(new DatabaseModelLoader().getReadingsFromCursor(c));
         db.closeDatabase();
@@ -206,7 +204,7 @@ public class KanjiView extends AppCompatActivity {
         wordsLearned = new DatabaseModelLoader().getWordsFromCursor(c);
         wordsLearned = new DatabaseContentLoader().addDetailsToWords(db, wordsLearned);
         c = db.handleQuery("SELECT * FROM word w, wordwriting ww " +
-                "WHERE ww.Word_WID = w.WID AND ww.writing LIKE '%" + kanji.getSymbol() + "%' AND w.learningProgress == 0 " +
+                "WHERE ww.Word_WID = w.WID AND ww.writing LIKE '%" + kanji.getSymbol() + "%' AND w.learningProgress = 0 " +
                 "ORDER BY w.frequency DESC LIMIT 10;");
         wordsNew = new DatabaseModelLoader().getWordsFromCursor(c);
         wordsNew = new DatabaseContentLoader().addDetailsToWords(db, wordsNew);

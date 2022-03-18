@@ -2,6 +2,7 @@ package com.example.kanjigear.db;
 
 import android.database.Cursor;
 
+import com.example.kanjigear.dataModels.Sentence;
 import com.example.kanjigear.dataModels.Word;
 
 import java.util.ArrayList;
@@ -21,6 +22,15 @@ public class DatabaseContentLoader {
             words.get(i).setWordReadings(new DatabaseModelLoader().getWordReadingsFromCursor(c));
         }
         return words;
+    }
+
+    public ArrayList<Sentence> addDetailsToSentences(DatabaseOpenHelper db, ArrayList<Sentence> sentences) {
+        Cursor c;
+        for (int i = 0; i < sentences.size(); i += 1) {
+            c = db.handleQuery("SELECT * FROM sentencemeaning WHERE Sentence_SID = " + sentences.get(i).getSID());
+            sentences.get(i).setMeanings(new DatabaseModelLoader().getSentenceMeaningsFromCursor(c));
+        }
+        return sentences;
     }
 
 }

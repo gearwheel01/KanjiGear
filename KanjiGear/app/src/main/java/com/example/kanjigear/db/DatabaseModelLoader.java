@@ -133,7 +133,7 @@ public class DatabaseModelLoader {
     }
 
     @SuppressLint("Range")
-    public ArrayList<KanjiMeaning> getMeaningsFromCursor(Cursor c) {
+    public ArrayList<KanjiMeaning> getKanjiMeaningsFromCursor(Cursor c) {
         ArrayList<KanjiMeaning> meanings = new ArrayList<>();
         c.moveToFirst();
         for (int i = 0; i < c.getCount(); i += 1) {
@@ -141,6 +141,20 @@ public class DatabaseModelLoader {
             String meaning = c.getString(c.getColumnIndex("meaning"));
             String language = c.getString(c.getColumnIndex("language"));
             meanings.add(new KanjiMeaning(KMID,meaning, language));
+            c.moveToNext();
+        }
+        c.close();
+        return meanings;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<SentenceMeaning> getSentenceMeaningsFromCursor(Cursor c) {
+        ArrayList<SentenceMeaning> meanings = new ArrayList<>();
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i += 1) {
+            String meaning = c.getString(c.getColumnIndex("meaning"));
+            String language = c.getString(c.getColumnIndex("language"));
+            meanings.add(new SentenceMeaning(language, meaning));
             c.moveToNext();
         }
         c.close();
@@ -161,4 +175,18 @@ public class DatabaseModelLoader {
         c.close();
         return readings;
     }
+
+    @SuppressLint("Range")
+    public ArrayList<Sentence> getSentencesFromCursor(Cursor c) {
+        ArrayList<Sentence> sentences = new ArrayList<>();
+        while (c.moveToNext()) {
+            String SID = c.getString(c.getColumnIndex("SID"));
+            String text = c.getString(c.getColumnIndex("text"));
+            int learningProgress = c.getInt(c.getColumnIndex("learningProgress"));
+            sentences.add(new Sentence(SID, text, learningProgress));
+        }
+        c.close();
+        return sentences;
+    }
+
 }

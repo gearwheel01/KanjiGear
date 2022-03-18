@@ -76,7 +76,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/kanjiViewListWords"
+        android:id="@+id/kanjiViewListKanji"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#5289B86B"
@@ -89,7 +89,7 @@
         app:layout_constraintTop_toBottomOf="@+id/kanjiViewTab" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/wordViewKanjiTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="words"

@@ -76,16 +76,21 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     }
 
     public void openDatabase() throws SQLException {
-        myDb = SQLiteDatabase.openDatabase(getFilePath(), null, SQLiteDatabase.OPEN_READWRITE);
+        if (myDb == null) {
+            myDb = SQLiteDatabase.openDatabase(getFilePath(), null, SQLiteDatabase.OPEN_READWRITE);
+        }
     }
 
     public void openDatabaseRead() throws SQLException {
-        myDb = SQLiteDatabase.openDatabase(getFilePath(), null, SQLiteDatabase.OPEN_READONLY);
+        if (myDb == null) {
+            myDb = SQLiteDatabase.openDatabase(getFilePath(), null, SQLiteDatabase.OPEN_READONLY);
+        }
     }
 
     public void closeDatabase() {
         if (myDb != null) {
             myDb.close();
+            myDb = null;
         }
     }
 

@@ -8,13 +8,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Kanji;
+import com.example.kanjigear.dataModels.Sentence;
 import com.example.kanjigear.dataModels.Word;
+import com.example.kanjigear.db.DatabaseContentLoader;
 import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
+import com.example.kanjigear.views.dictionary.RecyclerAdapterSentence;
+import com.example.kanjigear.views.dictionary.RecyclerAdapterWord;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
@@ -23,11 +29,18 @@ public class WordView extends AppCompatActivity {
     private Word word;
     private ArrayList<Kanji> kanjiInWord;
     private DatabaseOpenHelper db;
+    private int writingIndex;
+    private ArrayList<Sentence> sentencesLearned;
+    private ArrayList<Sentence> sentencesNew;
 
     private TextView viewTitle;
     private TextView viewReading;
     private TextView viewMeaning;
     private RecyclerView viewListKanji;
+    private TextView viewListKanjiBG;
+    private TextView viewKanjiTitle;
+    private TabLayout viewTabSentence;
+    private RecyclerView viewListSentences;
 
     private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
         + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
@@ -41,22 +54,46 @@ public class WordView extends AppCompatActivity {
 
         db = new DatabaseOpenHelper(getApplicationContext());
         viewTitle = findViewById(R.id.wordViewWord);
-        viewListKanji = findViewById(R.id.kanjiViewListWords);
+        viewListKanji = findViewById(R.id.kanjiViewListKanji);
         viewReading = findViewById(R.id.wordViewReading);
         viewMeaning = findViewById(R.id.wordViewMeaning);
-
-        loadWord(intent.getStringExtra("WID"));
-        if (word.getWordWritings().size() > 0) {
-            viewTitle.setText(word.getWordWritings().get(0));
-        }
-        if (word.getWordReadings().size() > 0) {
-            viewReading.setText(word.getWordReadings().get(0));
-        }
-        viewMeaning.setText(word.getTranslationString(""));
+        viewKanjiTitle = findViewById(R.id.wordViewKanjiTitle);
+        viewListKanjiBG = findViewById(R.id.kanjiViewWordsBG);
+        viewTabSentence = findViewById(R.id.wordViewTabSentence);
+        viewListSentences = findViewById(R.id.wordViewListSentences);
 
         viewListKanji.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         viewListKanji.setItemAnimator(new DefaultItemAnimator());
-        viewListKanji.setAdapter(new RecyclerAdapterKanji(this, kanjiInWord));
+
+        loadWord(intent.getStringExtra("WID"));
+        loadSentences();
+        selectWriting(0);
+        viewMeaning.setText(word.getTranslationString(""));
+
+        viewListSentences.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        viewListSentences.setItemAnimator(new DefaultItemAnimator());
+        setAdapterSentences(sentencesLearned);
+
+        viewTabSentence.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getText().equals(getResources().getString(R.string.kanjiViewTabNew))) {
+                    setAdapterSentences(sentencesNew);
+                } else {
+                    setAdapterSentences(sentencesLearned);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
 
@@ -76,30 +113,69 @@ public class WordView extends AppCompatActivity {
         c = db.handleQuery("SELECT * FROM wordmeaning WHERE Word_WID = '" + word.getWID() + "';");
         word.setTranslations(new DatabaseModelLoader().getWordMeaningsFromCursor(c));
 
-        getKanjiInWord();
-
         db.closeDatabase();
     }
 
     public void getKanjiInWord() {
+        db.openDatabaseRead();
         kanjiInWord = new ArrayList<>();
         ArrayList<Character> kanji = new ArrayList<>();
-        for(int i = 0; i < word.getWordWritings().size(); i += 1) {
-            String writing = word.getWordWritings().get(i);
-            for (int c = 0; c < writing.length(); c += 1) {
-                char symbol = writing.charAt(c);
-                if ( (!notkanjichars.contains(symbol + "")) && (!kanji.contains(symbol)) ) {
-                    kanji.add(symbol);
-                }
+        String writing = word.getWordWritings().get(writingIndex);
+        for (int c = 0; c < writing.length(); c += 1) {
+            char symbol = writing.charAt(c);
+            if ( (!notkanjichars.contains(symbol + "")) && (!kanji.contains(symbol)) ) {
+                kanji.add(symbol);
             }
         }
-
 
         for (int i = 0; i < kanji.size();  i += 1) {
             Cursor c = db.handleQuery("SELECT * FROM kanji WHERE symbol = '" + kanji.get(i) + "';");
             kanjiInWord.addAll(new DatabaseModelLoader().getKanjiFromCursor(c));
         }
+
+        viewListKanji.setAdapter(new RecyclerAdapterKanji(this, kanjiInWord));
+        db.closeDatabase();
     }
 
+    public void selectWriting(int i) {
+        writingIndex = i;
+        if (word.getWordWritings().size() > 0) {
+            viewTitle.setText(word.getWordWritings().get(i));
+            viewReading.setText(word.getWordReadings().get(i));
+            getKanjiInWord();
+        } else {
+            viewTitle.setText(word.getWordReadings().get(i));
+            viewReading.setVisibility(View.INVISIBLE);
+            viewReading.setHeight(0);
+            viewListKanjiBG.setVisibility(View.INVISIBLE);
+            viewListKanjiBG.setHeight(0);
+            viewKanjiTitle.setVisibility(View.INVISIBLE);
+            viewKanjiTitle.setHeight(0);
+        }
+    }
 
+    public void loadSentences() {
+        db.openDatabaseRead();
+        Cursor c = db.handleQuery("SELECT s.* FROM sentence s, sentencecontainsword sw " +
+                "WHERE s.SID = sw.Sentence_SID AND sw.Word_WID = " + word.getWID() + " AND learningProgress > 0;");
+        sentencesLearned = new DatabaseModelLoader().getSentencesFromCursor(c);
+        sentencesLearned = new DatabaseContentLoader().addDetailsToSentences(db, sentencesLearned);
+        c = db.handleQuery("SELECT s.* FROM sentence s, sentencecontainsword sw " +
+                "WHERE s.SID = sw.Sentence_SID AND sw.Word_WID = " + word.getWID() + " AND learningProgress = 0;");
+        sentencesNew = new DatabaseModelLoader().getSentencesFromCursor(c);
+        sentencesNew= new DatabaseContentLoader().addDetailsToSentences(db, sentencesNew);
+
+        db.closeDatabase();
+    }
+
+    public void setAdapterSentences(ArrayList<Sentence> sentences) {
+        RecyclerAdapterSentence adapter = new RecyclerAdapterSentence(this, sentences);
+        viewListSentences.setAdapter(adapter);
+    }
+
+    public void openSentence(Sentence sentence) {
+        Intent intent = new Intent(this, SentenceView.class);
+        intent.putExtra("SID", sentence.getSID());
+        startActivity(intent);
+    }
 }
