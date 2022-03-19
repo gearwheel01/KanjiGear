@@ -101,7 +101,7 @@
         android:id="@+id/wordViewTabSentence"
         android:layout_width="0dp"
         android:layout_height="53dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,4 +128,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wordViewTabSentence" />
+
+    <Button
+        android:id="@+id/wordViewWritingAlt"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:onClick="selectWriting"
+        android:text="..."
+        app:layout_constraintStart_toEndOf="@+id/wordViewWord"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

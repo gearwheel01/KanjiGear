@@ -1,14 +1,17 @@
 package com.example.kanjigear.views.components;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.kanjigear.R;
@@ -19,7 +22,6 @@ import com.example.kanjigear.db.DatabaseContentLoader;
 import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.views.dictionary.RecyclerAdapterSentence;
-import com.example.kanjigear.views.dictionary.RecyclerAdapterWord;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class WordView extends AppCompatActivity {
     private TextView viewTitle;
     private TextView viewReading;
     private TextView viewMeaning;
+    private Button viewWritingAlt;
     private RecyclerView viewListKanji;
     private TextView viewListKanjiBG;
     private TextView viewKanjiTitle;
@@ -57,6 +60,7 @@ public class WordView extends AppCompatActivity {
         viewListKanji = findViewById(R.id.kanjiViewListKanji);
         viewReading = findViewById(R.id.wordViewReading);
         viewMeaning = findViewById(R.id.wordViewMeaning);
+        viewWritingAlt = findViewById(R.id.wordViewWritingAlt);
         viewKanjiTitle = findViewById(R.id.wordViewKanjiTitle);
         viewListKanjiBG = findViewById(R.id.kanjiViewWordsBG);
         viewTabSentence = findViewById(R.id.wordViewTabSentence);
@@ -67,8 +71,12 @@ public class WordView extends AppCompatActivity {
 
         loadWord(intent.getStringExtra("WID"));
         loadSentences();
-        selectWriting(0);
+        updateWriting(0);
         viewMeaning.setText(word.getTranslationString(""));
+
+        if (word.getWordWritings().size() < 2) {
+            viewWritingAlt.setVisibility(View.INVISIBLE);
+        }
 
         viewListSentences.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         viewListSentences.setItemAnimator(new DefaultItemAnimator());
@@ -137,11 +145,31 @@ public class WordView extends AppCompatActivity {
         db.closeDatabase();
     }
 
-    public void selectWriting(int i) {
+    public void selectWriting(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("select writing");
+        builder.setItems(wordWritingsToArray(), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                updateWriting(which);
+            }
+        });
+        builder.show();
+    }
+
+    public String[] wordWritingsToArray() {
+        String[] writings = new String[word.getWordWritings().size()];
+        for (int i = 0; i < word.getWordWritings().size(); i += 1) {
+            writings[i] = word.getWordWritings().get(i);
+        }
+        return writings;
+    }
+
+    public void updateWriting(int i) {
         writingIndex = i;
         if (word.getWordWritings().size() > 0) {
             viewTitle.setText(word.getWordWritings().get(i));
-            viewReading.setText(word.getWordReadings().get(i));
+            viewReading.setText(word.getWordReadings().get(0));
             getKanjiInWord();
         } else {
             viewTitle.setText(word.getWordReadings().get(i));
