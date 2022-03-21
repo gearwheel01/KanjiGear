@@ -6,17 +6,21 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.kanjigear.R;
+import com.example.kanjigear.alerts.AddToList;
 import com.example.kanjigear.dataModels.Kanji;
 import com.example.kanjigear.dataModels.Sentence;
+import com.example.kanjigear.dataModels.StudyList;
 import com.example.kanjigear.dataModels.Word;
 import com.example.kanjigear.db.DatabaseContentLoader;
 import com.example.kanjigear.db.DatabaseModelLoader;
@@ -44,6 +48,7 @@ public class WordView extends AppCompatActivity {
     private TextView viewKanjiTitle;
     private TabLayout viewTabSentence;
     private RecyclerView viewListSentences;
+    private Button viewAddlist;
 
     private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
         + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
@@ -53,19 +58,9 @@ public class WordView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_view);
+        loadResources();
+
         Intent intent = getIntent();
-
-        db = new DatabaseOpenHelper(getApplicationContext());
-        viewTitle = findViewById(R.id.wordViewWord);
-        viewListKanji = findViewById(R.id.kanjiViewListKanji);
-        viewReading = findViewById(R.id.wordViewReading);
-        viewMeaning = findViewById(R.id.wordViewMeaning);
-        viewWritingAlt = findViewById(R.id.wordViewWritingAlt);
-        viewKanjiTitle = findViewById(R.id.wordViewKanjiTitle);
-        viewListKanjiBG = findViewById(R.id.kanjiViewWordsBG);
-        viewTabSentence = findViewById(R.id.wordViewTabSentence);
-        viewListSentences = findViewById(R.id.wordViewListSentences);
-
         viewListKanji.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         viewListKanji.setItemAnimator(new DefaultItemAnimator());
 
@@ -77,6 +72,9 @@ public class WordView extends AppCompatActivity {
         if (word.getWordWritings().size() < 2) {
             viewWritingAlt.setVisibility(View.INVISIBLE);
         }
+        if (intent.hasExtra("SLID")) {
+            updateAddlistButton();
+        }
 
         viewListSentences.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         viewListSentences.setItemAnimator(new DefaultItemAnimator());
@@ -85,7 +83,7 @@ public class WordView extends AppCompatActivity {
         viewTabSentence.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getText().equals(getResources().getString(R.string.kanjiViewTabNew))) {
+                if (tab.getText().equals(getResources().getString(R.string.tabNew))) {
                     setAdapterSentences(sentencesNew);
                 } else {
                     setAdapterSentences(sentencesLearned);
@@ -104,12 +102,20 @@ public class WordView extends AppCompatActivity {
         });
     }
 
-
-    public void openKanji(String symbol) {
-        Intent intent = new Intent(this, KanjiView.class);
-        intent.putExtra("symbol", symbol);
-        startActivity(intent);
+    public void loadResources() {
+        db = new DatabaseOpenHelper(getApplicationContext());
+        viewTitle = findViewById(R.id.wordViewWord);
+        viewListKanji = findViewById(R.id.kanjiViewListKanji);
+        viewReading = findViewById(R.id.wordViewReading);
+        viewMeaning = findViewById(R.id.wordViewMeaning);
+        viewWritingAlt = findViewById(R.id.wordViewWritingAlt);
+        viewKanjiTitle = findViewById(R.id.wordViewKanjiTitle);
+        viewListKanjiBG = findViewById(R.id.kanjiViewWordsBG);
+        viewTabSentence = findViewById(R.id.wordViewTabSentence);
+        viewListSentences = findViewById(R.id.wordViewListSentences);
+        viewAddlist = findViewById(R.id.wordViewAddlist);
     }
+
 
     public void loadWord(String WID) {
         db.openDatabaseRead();
@@ -204,6 +210,52 @@ public class WordView extends AppCompatActivity {
     public void openSentence(Sentence sentence) {
         Intent intent = new Intent(this, SentenceView.class);
         intent.putExtra("SID", sentence.getSID());
+        if (getIntent().hasExtra("SLID")) {
+            intent.putExtra("SLID", getIntent().getStringExtra("SLID"));
+        }
         startActivity(intent);
+    }
+    public void openKanji(String symbol) {
+        Intent intent = new Intent(this, KanjiView.class);
+        intent.putExtra("symbol", symbol);
+        if (getIntent().hasExtra("SLID")) {
+            intent.putExtra("SLID", getIntent().getStringExtra("SLID"));
+        }
+        startActivity(intent);
+    }
+
+    public boolean isWordInList(String SLID) {
+        db.openDatabaseRead();
+        boolean ret = (db.handleQuery("SELECT * FROM listcontainsword WHERE Word_WID = " + word.getWID() + " AND StudyList_SLID = " + SLID + ";").getCount() > 0);
+        db.closeDatabase();
+        return ret;
+    }
+
+    public void updateAddlistButton() {
+        viewAddlist.setBackgroundResource(isWordInList(getIntent().getStringExtra("SLID"))?
+                R.drawable.button_listadded:R.drawable.button_listadd);
+    }
+
+
+    public void addToList(View v) {
+        if (getIntent().hasExtra("SLID")) {
+            String SLID = getIntent().getStringExtra("SLID");
+            if (isWordInList(SLID)) {
+                db.openDatabase();
+                db.delete("listcontainsword", "StudyList_SLID", SLID, "Word_WID", word.getWID());
+                db.closeDatabase();
+            } else {
+                ContentValues values = new ContentValues();
+                values.put("StudyList_SLID", SLID);
+                values.put("Word_WID", word.getWID());
+                db.openDatabase();
+                db.insert("listcontainsword", values);
+                db.closeDatabase();
+            }
+            updateAddlistButton();
+        } else {
+            AddToList dialog = new AddToList(this, db, word);
+            dialog.showDialog(this);
+        }
     }
 }

@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">KanjiGear</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="kanjiViewTabNew">new</string>
-    <string name="kanjiViewTabLearned">learned</string>
+    <string name="tabNew">new</string>
+    <string name="tabLearned">learned</string>
+    <string name="tabWords">words</string>
+    <string name="tabSentences">sentences</string>
+    <string name="tabKanji">kanji</string>
 </resources>

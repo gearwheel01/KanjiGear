@@ -3,6 +3,7 @@ package com.example.kanjigear.db;
 import android.database.Cursor;
 
 import com.example.kanjigear.dataModels.Sentence;
+import com.example.kanjigear.dataModels.StudyList;
 import com.example.kanjigear.dataModels.Word;
 
 import java.util.ArrayList;
@@ -31,6 +32,14 @@ public class DatabaseContentLoader {
             sentences.get(i).setMeanings(new DatabaseModelLoader().getSentenceMeaningsFromCursor(c));
         }
         return sentences;
+    }
+
+    public ArrayList<StudyList> getStudyLists(DatabaseOpenHelper db) {
+        db.openDatabase();
+        Cursor c = db.handleQuery("SELECT * FROM studylist;");
+        ArrayList<StudyList> studyLists = new DatabaseModelLoader().getStudyListsFromCursor(c);
+        db.closeDatabase();
+        return studyLists;
     }
 
 }

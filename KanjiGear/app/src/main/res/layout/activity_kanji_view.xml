@@ -31,13 +31,12 @@
         android:id="@+id/kanjiViewMeaning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
         android:text="meaning"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/kanjiViewAddlist" />
 
     <TextView
         android:id="@+id/kanjiViewKUN"
@@ -79,7 +78,7 @@
         android:id="@+id/kanjiViewListKanji"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#5289B86B"
+        android:background="@color/listBG"
         android:clipChildren="false"
         android:clipToPadding="true"
         android:outlineProvider="paddedBounds"
@@ -149,14 +148,26 @@
             android:id="@+id/kanjiViewTabLearned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/kanjiViewTabLearned" />
+            android:text="@string/tabLearned" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/kanjiViewTabNew"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/kanjiViewTabNew" />
+            android:text="@string/tabNew" />
 
     </com.google.android.material.tabs.TabLayout>
+
+    <Button
+        android:id="@+id/kanjiViewAddlist"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/button_listadd"
+        android:backgroundTint="@color/teal_700"
+        android:onClick="addToList"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

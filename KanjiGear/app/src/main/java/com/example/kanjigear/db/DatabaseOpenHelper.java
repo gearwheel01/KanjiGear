@@ -132,6 +132,9 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     public void delete(String table, String idName, String id) {
         myDb.delete(table, idName + "= '" + id + "'" , null);
     }
+    public void delete(String table, String idName1, String id1, String idName2, String id2) {
+        myDb.delete(table, idName1 + " = '" + id1 + "' AND " + idName2 + " = '" + id2 + "'", null);
+    }
 
     public void update(String table, ContentValues values, String idName, String id) {
         myDb.update(table, values, idName + "= '" + id + "'", null);

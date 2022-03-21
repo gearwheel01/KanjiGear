@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.PictureDrawable;
@@ -18,9 +19,11 @@ import android.widget.TextView;
 
 import com.caverock.androidsvg.SVG;
 import com.example.kanjigear.R;
+import com.example.kanjigear.alerts.AddToList;
 import com.example.kanjigear.dataModels.Kanji;
 import com.example.kanjigear.dataModels.KanjiMeaning;
 import com.example.kanjigear.dataModels.Stroke;
+import com.example.kanjigear.dataModels.StudyList;
 import com.example.kanjigear.dataModels.Word;
 import com.example.kanjigear.db.DatabaseContentLoader;
 import com.example.kanjigear.db.DatabaseModelLoader;
@@ -40,6 +43,7 @@ public class KanjiView extends AppCompatActivity {
     private Button viewAnimate;
     private RecyclerView viewWords;
     private TabLayout viewWordTabs;
+    private Button viewAddlist;
 
     private DatabaseOpenHelper db;
     private int size;
@@ -58,16 +62,7 @@ public class KanjiView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kanji_view);
 
-        viewSVG = findViewById(R.id.imageView);
-        ViewBG = findViewById(R.id.kanjiViewBG);
-        viewMeaning = findViewById(R.id.kanjiViewMeaning);
-        viewKUN = findViewById(R.id.kanjiViewKUN);
-        viewON = findViewById(R.id.kanjiViewON);
-        viewAnimate = findViewById(R.id.kanjiViewAnimate);
-        viewWords = findViewById(R.id.kanjiViewListKanji);
-        viewWordTabs = findViewById(R.id.kanjiViewTab);
-
-        db = new DatabaseOpenHelper(getApplicationContext());
+        loadResources();
 
         Intent intent = getIntent();
         getKanjiInformation(intent.getStringExtra("symbol"));
@@ -77,6 +72,10 @@ public class KanjiView extends AppCompatActivity {
 
         getStrokes();
         loadWords();
+
+        if (intent.hasExtra("SLID")) {
+            updateAddlistButton();
+        }
 
         viewWords.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         viewWords.setItemAnimator(new DefaultItemAnimator());
@@ -97,7 +96,7 @@ public class KanjiView extends AppCompatActivity {
         viewWordTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getText().equals(getResources().getString(R.string.kanjiViewTabNew))) {
+                if (tab.getText().equals(getResources().getString(R.string.tabNew))) {
                     setAdapter(wordsNew);
                 } else {
                     setAdapter(wordsLearned);
@@ -115,6 +114,20 @@ public class KanjiView extends AppCompatActivity {
             }
         });
     }
+
+    public void loadResources() {
+        viewSVG = findViewById(R.id.imageView);
+        ViewBG = findViewById(R.id.kanjiViewBG);
+        viewMeaning = findViewById(R.id.kanjiViewMeaning);
+        viewKUN = findViewById(R.id.kanjiViewKUN);
+        viewON = findViewById(R.id.kanjiViewON);
+        viewAnimate = findViewById(R.id.kanjiViewAnimate);
+        viewWords = findViewById(R.id.kanjiViewListKanji);
+        viewWordTabs = findViewById(R.id.kanjiViewTab);
+        viewAddlist = findViewById(R.id.kanjiViewAddlist);
+        db = new DatabaseOpenHelper(getApplicationContext());
+    }
+
 
     public void getKanjiInformation(String symbol) {
         db.openDatabaseRead();
@@ -220,6 +233,42 @@ public class KanjiView extends AppCompatActivity {
     public void openWord(String WID) {
         Intent intent = new Intent(this, WordView.class);
         intent.putExtra("WID", WID);
+        if (getIntent().hasExtra("SLID")) {
+            intent.putExtra("SLID", getIntent().getStringExtra("SLID"));
+        }
         startActivity(intent);
+    }
+
+    public boolean isKanjiInList(String SLID) {
+        db.openDatabaseRead();
+        boolean ret = (db.handleQuery("SELECT * FROM listcontainskanji WHERE Kanji_symbol = '" + kanji.getSymbol() + "' AND StudyList_SLID = " + SLID + ";").getCount() > 0);
+        db.closeDatabase();
+        return ret;
+    }
+    public void updateAddlistButton() {
+        viewAddlist.setBackgroundResource(isKanjiInList(getIntent().getStringExtra("SLID"))?
+                R.drawable.button_listadded:R.drawable.button_listadd);
+    }
+
+    public void addToList(View v) {
+        if (getIntent().hasExtra("SLID")) {
+            String SLID = getIntent().getStringExtra("SLID");
+            if (isKanjiInList(SLID)) {
+                db.openDatabase();
+                db.delete("listcontainskanji", "StudyList_SLID", SLID, "Kanji_symbol", kanji.getSymbol());
+                db.closeDatabase();
+            } else {
+                ContentValues values = new ContentValues();
+                values.put("StudyList_SLID", SLID);
+                values.put("Kanji_symbol", kanji.getSymbol());
+                db.openDatabase();
+                db.insert("listcontainskanji", values);
+                db.closeDatabase();
+            }
+            updateAddlistButton();
+        } else {
+            AddToList dialog = new AddToList(this, db, kanji);
+            dialog.showDialog(this);
+        }
     }
 }

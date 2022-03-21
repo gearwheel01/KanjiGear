@@ -78,6 +78,9 @@ public class Dictionary extends AppCompatActivity {
     public void openWord(String WID) {
         Intent intent = new Intent(this, WordView.class);
         intent.putExtra("WID", WID);
+        if (getIntent().hasExtra("SLID")) {
+            intent.putExtra("SLID", getIntent().getStringExtra("SLID"));
+        }
         startActivity(intent);
     }
 

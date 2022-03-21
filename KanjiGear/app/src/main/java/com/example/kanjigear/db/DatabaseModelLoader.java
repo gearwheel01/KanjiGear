@@ -2,6 +2,7 @@ package com.example.kanjigear.db;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.example.kanjigear.dataModels.*;
 
@@ -70,7 +71,8 @@ public class DatabaseModelLoader {
         for (int i = 0; i < c.getCount(); i += 1) {
             String name = c.getString(c.getColumnIndex("name"));
             String SLID = c.getString(c.getColumnIndex("SLID"));
-            lists.add(new StudyList(SLID,name));
+            boolean active = (c.getInt(c.getColumnIndex("isActive")) == 1);
+            lists.add(new StudyList(SLID,name, active));
             c.moveToNext();
         }
         c.close();

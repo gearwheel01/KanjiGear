@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.StudyList;
+import com.example.kanjigear.db.DatabaseContentLoader;
 import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 
@@ -64,10 +65,7 @@ public class StudyLists extends AppCompatActivity {
 
     // Database access
     public void getStudyLists() {
-        db.openDatabase();
-        Cursor c = db.handleQuery("SELECT * FROM studylist;");
-        studyLists = new DatabaseModelLoader().getStudyListsFromCursor(c);
-        db.closeDatabase();
+        studyLists = new DatabaseContentLoader().getStudyLists(db);
     }
 
     // returns id of new list
@@ -85,6 +83,7 @@ public class StudyLists extends AppCompatActivity {
         } while (exists);
         ContentValues values = new ContentValues();
         values.put("name",newName);
+        values.put("isActive", 0);
         db.insert("studylist",values);
         Cursor c = db.handleQuery("SELECT SLID FROM studylist WHERE name = '" + newName + "';");
         c.moveToFirst();

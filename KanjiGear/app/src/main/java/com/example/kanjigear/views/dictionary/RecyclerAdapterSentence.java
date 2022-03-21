@@ -13,16 +13,22 @@ import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Sentence;
 import com.example.kanjigear.views.components.KanjiView;
 import com.example.kanjigear.views.components.WordView;
+import com.example.kanjigear.views.studyLists.StudyListDetails;
 
 import java.util.ArrayList;
 
 public class RecyclerAdapterSentence extends RecyclerView.Adapter<RecyclerAdapterSentence.sentenceViewHolder> {
 
     private ArrayList<Sentence> sentences;
-    private WordView context = null;
+    private WordView contextWord = null;
+    private StudyListDetails contextList = null;
 
     public RecyclerAdapterSentence(WordView context, ArrayList<Sentence> sentences) {
-        this.context = context;
+        this.contextWord = context;
+        this.sentences = sentences;
+    }
+    public RecyclerAdapterSentence(StudyListDetails context, ArrayList<Sentence> sentences) {
+        this.contextList = context;
         this.sentences = sentences;
     }
 
@@ -49,7 +55,12 @@ public class RecyclerAdapterSentence extends RecyclerView.Adapter<RecyclerAdapte
         Sentence s = sentences.get(position);
         holder.text.setText(s.getText());
         holder.bg.setOnClickListener(l -> {
-            context.openSentence(s);
+            if (contextWord != null) {
+                contextWord.openSentence(s);
+            }
+            if (contextList != null) {
+                contextList.openSentence(s);
+            }
         });
     }
 

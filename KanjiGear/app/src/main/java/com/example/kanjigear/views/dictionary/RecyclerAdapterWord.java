@@ -13,6 +13,7 @@ import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Word;
 import com.example.kanjigear.views.components.KanjiView;
 import com.example.kanjigear.views.components.SentenceView;
+import com.example.kanjigear.views.studyLists.StudyListDetails;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,7 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
     private Dictionary contextDictionary = null;
     private KanjiView contextKanji = null;
     private SentenceView contextSentence = null;
+    private StudyListDetails contextList = null;
 
     public RecyclerAdapterWord(Dictionary contextDictionary, ArrayList<Word> words) {
         this.contextDictionary = contextDictionary;
@@ -35,6 +37,11 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
 
     public RecyclerAdapterWord(SentenceView contextSentence, ArrayList<Word> words) {
         this.contextSentence = contextSentence;
+        this.words = words;
+    }
+
+    public RecyclerAdapterWord(StudyListDetails contextList, ArrayList<Word> words) {
+        this.contextList = contextList;
         this.words = words;
     }
 
@@ -76,6 +83,9 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
             }
             if (contextSentence != null) {
                 contextSentence.openWord(w.getWID());
+            }
+            if (contextList != null) {
+                contextList.openWord(w.getWID());
             }
         });
     }
