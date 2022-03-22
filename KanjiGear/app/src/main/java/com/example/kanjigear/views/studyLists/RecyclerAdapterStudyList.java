@@ -3,6 +3,7 @@ package com.example.kanjigear.views.studyLists;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,7 +25,7 @@ public class RecyclerAdapterStudyList extends RecyclerView.Adapter<RecyclerAdapt
     }
 
     public class studyListViewHolder extends RecyclerView.ViewHolder {
-        private TextView name;
+        private Button name;
 
         public studyListViewHolder(final View view) {
             super(view);
@@ -41,8 +42,8 @@ public class RecyclerAdapterStudyList extends RecyclerView.Adapter<RecyclerAdapt
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapterStudyList.studyListViewHolder holder, int position) {
-        String name = studyLists.get(position).getName();
-        holder.name.setText(name);
+        holder.name.setBackgroundResource(studyLists.get(position).isActive()? R.color.teal_200: R.color.teal_700);
+        holder.name.setText(studyLists.get(position).getName());
         holder.name.setOnClickListener(l -> {
             context.openListDetails(studyLists.get(position).getSLID());
         });

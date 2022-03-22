@@ -1,7 +1,5 @@
 package com.example.kanjigear.views.components;
 
-import android.util.Log;
-
 import com.example.kanjigear.dataModels.Stroke;
 
 import java.util.ArrayList;
@@ -10,10 +8,10 @@ public class KanjiAnimator extends Thread {
 
     KanjiView view;
     ArrayList<Stroke> strokes;
-    int sleepTime;
+    float sleepTime;
     float steps;
 
-    public KanjiAnimator(KanjiView v, ArrayList<Stroke> s, int st, float sp) {
+    public KanjiAnimator(KanjiView v, ArrayList<Stroke> s, float st, float sp) {
         view = v;
         strokes = s;
         sleepTime = st;
@@ -22,17 +20,17 @@ public class KanjiAnimator extends Thread {
 
     public void run() {
         for (int s = 0; s < strokes.size(); s += 1) {
-            for (float i = strokes.get(s).getLength() - 1; i > 0; i -= steps) {
-                view.openSVG(s, i);
+            for (float i = 0; i < 1; i += steps) {
+                view.drawKanji(s, i);
                 try {
-                    sleep(sleepTime);
+                    sleep((long)(sleepTime * strokes.get(s).getLength()));
                 } catch (InterruptedException e) {
                     return;
                 }
             }
-            view.openSVG(s, 0);
+            view.drawKanji(s, 1);
             try {
-                sleep(sleepTime * 6);
+                sleep((long)(sleepTime * 6));
             } catch (InterruptedException e) {
                 return;
             }

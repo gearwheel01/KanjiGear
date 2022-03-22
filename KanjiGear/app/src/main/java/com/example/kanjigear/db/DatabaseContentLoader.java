@@ -2,10 +2,13 @@ package com.example.kanjigear.db;
 
 import android.database.Cursor;
 
+import com.example.kanjigear.dataModels.Kanji;
 import com.example.kanjigear.dataModels.Sentence;
+import com.example.kanjigear.dataModels.Stroke;
 import com.example.kanjigear.dataModels.StudyList;
 import com.example.kanjigear.dataModels.Word;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DatabaseContentLoader {
@@ -34,12 +37,43 @@ public class DatabaseContentLoader {
         return sentences;
     }
 
+    public Kanji getKanji(DatabaseOpenHelper db, String symbol) {
+        db.openDatabaseRead();
+        Cursor c = db.handleQuery("SELECT * FROM kanji WHERE symbol = '" + symbol + "';");
+        Kanji kanji = addDetailsToKanji(db, new DatabaseModelLoader().getKanjiFromCursor(c)).get(0);
+        db.closeDatabase();
+        return kanji;
+    }
+
+    public ArrayList<Kanji> addDetailsToKanji(DatabaseOpenHelper db, ArrayList<Kanji> kanji) {
+        Cursor c;
+        for (int i = 0; i < kanji.size(); i += 1) {
+            c = db.handleQuery("SELECT * FROM kanjimeaning WHERE Kanji_symbol = '" + kanji.get(i).getSymbol() + "';");
+            kanji.get(i).setMeanings(new DatabaseModelLoader().getKanjiMeaningsFromCursor(c));
+            c = db.handleQuery("SELECT * FROM kanjireading WHERE Kanji_symbol = '" + kanji.get(i).getSymbol() + "';");
+            kanji.get(i).setReadings(new DatabaseModelLoader().getReadingsFromCursor(c));
+        }
+        return kanji;
+    }
+
     public ArrayList<StudyList> getStudyLists(DatabaseOpenHelper db) {
         db.openDatabase();
         Cursor c = db.handleQuery("SELECT * FROM studylist;");
         ArrayList<StudyList> studyLists = new DatabaseModelLoader().getStudyListsFromCursor(c);
         db.closeDatabase();
         return studyLists;
+    }
+
+    public ArrayList<Stroke> getStrokes(DatabaseOpenHelper db, Kanji kanji) {
+        db.openDatabaseRead();
+        Cursor c = db.handleQuery("SELECT * FROM stroke WHERE Kanji_symbol = '" + kanji.getSymbol() + "';");
+        ArrayList<Stroke> strokes = new DatabaseModelLoader().getStrokesFromCursor(c);
+        for (int i = 0; i < strokes.size(); i += 1) {
+            c = db.handleQuery("SELECT * FROM bezier WHERE SID = " + strokes.get(i).getSID());
+            strokes.get(i).setBeziers(new DatabaseModelLoader().getBeziersFromCursor(c));
+        }
+        db.closeDatabase();
+        return strokes;
     }
 
 }

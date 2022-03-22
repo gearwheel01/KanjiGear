@@ -7,10 +7,10 @@
 
     <Button
         android:id="@+id/itemCompKanji"
-        android:layout_width="301dp"
-        android:layout_height="46dp"
+        android:layout_width="370dp"
+        android:layout_height="48dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/button_secondary"
+        android:background="@color/teal_700"
         android:text="Study Lists"
         android:textAllCaps="false"
         android:textSize="16dp"

@@ -11,6 +11,7 @@ import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.db.LoadDatabaseAsync;
 import com.example.kanjigear.views.components.KanjiView;
 import com.example.kanjigear.views.dictionary.Dictionary;
+import com.example.kanjigear.views.lesson.DrawKanji;
 import com.example.kanjigear.views.studyLists.StudyLists;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openQuickLesson(View v) {
-        Intent intent = new Intent(this, KanjiView.class);
-        intent.putExtra("symbol", "贅");
+        Intent intent = new Intent(this, DrawKanji.class);
+        intent.putExtra("symbol", "偉");
         startActivity(intent);
     }
 

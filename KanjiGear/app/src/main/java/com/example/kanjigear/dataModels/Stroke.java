@@ -1,5 +1,6 @@
 package com.example.kanjigear.dataModels;
 
+import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.util.Log;
@@ -18,6 +19,7 @@ public class Stroke {
     Path path;
     float length;
     private ArrayList<Bezier> beziers;
+    boolean wasTransformed = false;
 
 
     public Stroke(String SID, int number, String kanji_symbol, String component, float mx, float my) {
@@ -83,6 +85,7 @@ public class Stroke {
     }
 
     public Path getPath() {
+        Log.d("path", "asöfdl : " + wasTransformed);
         return path;
     }
 
@@ -98,7 +101,13 @@ public class Stroke {
             }
         }
         path = p;
+    }
 
+    public void transformPath(int width, int height) {
+        Matrix matrix = new Matrix();
+        matrix.setScale((width / 109f), (height / 109f), 0, 0);
+        path.transform(matrix);
+        wasTransformed = true;
     }
 
     public float getLength() {

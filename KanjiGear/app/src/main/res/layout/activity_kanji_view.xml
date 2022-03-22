@@ -6,26 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".views.components.KanjiView">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/kanjiViewBG"
-        app:layout_constraintVertical_bias="0.167" />
-
-    <ImageView
-        android:id="@+id/kanjiViewBG"
+    <com.example.kanjigear.views.components.KanjiGraphicView
+        android:id="@+id/kanjiViewKanji"
         android:layout_width="195dp"
         android:layout_height="195dp"
         android:layout_marginTop="32dp"
         android:elevation="-50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/kanjiViewMeaning"
-        app:srcCompat="@color/purple_200" />
+        app:layout_constraintTop_toBottomOf="@+id/kanjiViewMeaning" />
 
     <TextView
         android:id="@+id/kanjiViewMeaning"
@@ -45,11 +34,10 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/kanjiViewBG"
+        app:layout_constraintEnd_toStartOf="@+id/kanjiViewKanji"
         app:layout_constraintHorizontal_bias="0.142"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/kanjiViewBG"
-        tools:layout_editor_absoluteY="129dp" />
+        app:layout_constraintTop_toTopOf="@id/kanjiViewKanji" />
 
     <TextView
         android:id="@+id/kanjiViewON"
@@ -60,8 +48,8 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.409"
-        app:layout_constraintStart_toEndOf="@+id/kanjiViewBG"
-        app:layout_constraintTop_toTopOf="@+id/kanjiViewBG" />
+        app:layout_constraintStart_toEndOf="@+id/kanjiViewKanji"
+        app:layout_constraintTop_toTopOf="@+id/kanjiViewKanji" />
 
     <ProgressBar
         android:id="@+id/progressBar2"
@@ -104,11 +92,11 @@
         android:layout_marginEnd="48dp"
         android:background="@drawable/button_animation_play"
         android:onClick="animate"
-        app:layout_constraintBottom_toBottomOf="@id/kanjiViewBG"
+        app:layout_constraintBottom_toBottomOf="@id/kanjiViewKanji"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toEndOf="@+id/kanjiViewBG"
-        app:layout_constraintTop_toTopOf="@+id/kanjiViewBG"
+        app:layout_constraintStart_toEndOf="@+id/kanjiViewKanji"
+        app:layout_constraintTop_toTopOf="@+id/kanjiViewKanji"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -120,7 +108,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/kanjiViewKUN"
-        app:layout_constraintEnd_toStartOf="@+id/kanjiViewBG"
+        app:layout_constraintEnd_toStartOf="@+id/kanjiViewKanji"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -133,7 +121,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/kanjiViewON"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/kanjiViewBG" />
+        app:layout_constraintStart_toEndOf="@+id/kanjiViewKanji" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/kanjiViewTab"
@@ -142,7 +130,7 @@
         android:layout_marginTop="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/kanjiViewBG">
+        app:layout_constraintTop_toBottomOf="@+id/kanjiViewKanji">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/kanjiViewTabLearned"
