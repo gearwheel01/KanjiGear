@@ -89,12 +89,11 @@
         android:id="@+id/kanjiViewAnimate"
         android:layout_width="46dp"
         android:layout_height="46dp"
-        android:layout_marginEnd="48dp"
+        android:layout_marginStart="4dp"
         android:background="@drawable/button_animation_play"
         android:onClick="animate"
         app:layout_constraintBottom_toBottomOf="@id/kanjiViewKanji"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintEnd_toStartOf="@+id/kanjiViewDraw"
         app:layout_constraintStart_toEndOf="@+id/kanjiViewKanji"
         app:layout_constraintTop_toTopOf="@+id/kanjiViewKanji"
         app:layout_constraintVertical_bias="1.0" />
@@ -157,5 +156,16 @@
         android:onClick="addToList"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/kanjiViewDraw"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/button_paint"
+        android:onClick="openDrawKanji"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/kanjiViewKanji"
+        tools:layout_editor_absoluteY="316dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

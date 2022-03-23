@@ -85,7 +85,6 @@ public class Stroke {
     }
 
     public Path getPath() {
-        Log.d("path", "asöfdl : " + wasTransformed);
         return path;
     }
 

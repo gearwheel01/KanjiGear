@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openQuickLesson(View v) {
         Intent intent = new Intent(this, DrawKanji.class);
-        intent.putExtra("symbol", "偉");
+        intent.putExtra("symbol", "雲");
         startActivity(intent);
     }
 

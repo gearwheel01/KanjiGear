@@ -41,8 +41,8 @@ public class DrawKanji extends AppCompatActivity {
         kanji = loadHelper.getKanji(db, intent.getStringExtra("symbol"));
         strokes = loadHelper.getStrokes(db, kanji);
 
-        viewKanji.setDrawMode(true);
         viewKanji.setStrokes(strokes);
+        viewKanji.setDrawMode(true);
     }
 
     public void loadResources() {

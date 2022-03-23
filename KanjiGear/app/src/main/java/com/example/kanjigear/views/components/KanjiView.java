@@ -26,6 +26,7 @@ import com.example.kanjigear.db.DatabaseContentLoader;
 import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.views.dictionary.RecyclerAdapterWord;
+import com.example.kanjigear.views.lesson.DrawKanji;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -167,6 +168,12 @@ public class KanjiView extends AppCompatActivity {
         if (getIntent().hasExtra("SLID")) {
             intent.putExtra("SLID", getIntent().getStringExtra("SLID"));
         }
+        startActivity(intent);
+    }
+
+    public void openDrawKanji(View v) {
+        Intent intent = new Intent(this, DrawKanji.class);
+        intent.putExtra("symbol", kanji.getSymbol());
         startActivity(intent);
     }
 
