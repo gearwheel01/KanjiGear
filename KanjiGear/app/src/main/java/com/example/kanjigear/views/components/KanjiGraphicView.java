@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Stroke;
+import com.example.kanjigear.views.lesson.DrawKanji;
 
 import java.util.ArrayList;
 
@@ -21,12 +22,13 @@ public class KanjiGraphicView extends View {
     private Paint paint = new Paint();
     private ArrayList<Stroke> strokes;
     private Path path = new Path();
-    private int strokeWidth = 5;
+    private int strokeWidth;
 
     private ArrayList<Path> drawnStrokes;
     private boolean drawMode = false;
     private int drawTolerance;
     private int drawStroke;
+    private DrawKanji context;
 
     private boolean transformedPaths = false;
     private int drawUntilStroke;
@@ -44,18 +46,19 @@ public class KanjiGraphicView extends View {
     }
 
     public void setStrokes(ArrayList<Stroke> strokes) {
+        transformedPaths = false;
+        strokeWidth = 5;
         this.strokes = strokes;
         drawUntilStroke = strokes.size();
         lastStrokeLength = 0;
         invalidate();
     }
-    public void setDrawMode(boolean dm) {
-        drawMode = dm;
-        if (dm) {
-            drawUntilStroke = 0;
-            drawStroke = 0;
-            drawnStrokes = new ArrayList<>();
-        }
+    public void setDrawMode(DrawKanji context) {
+        this.context = context;
+        drawMode = true;
+        drawUntilStroke = 0;
+        drawStroke = 0;
+        drawnStrokes = new ArrayList<>();
     }
 
     @Override
@@ -113,6 +116,7 @@ public class KanjiGraphicView extends View {
 
                         if (drawStroke >= strokes.size()) {
                             drawMode = false;
+                            context.finishedDrawing();
                         }
                     }
                     path = new Path();
@@ -167,5 +171,10 @@ public class KanjiGraphicView extends View {
         float[] coords = new float[2];
         pm.getPosTan(pm.getLength() * lengthPercentage, coords, null);
         return coords;
+    }
+
+    public void resetDrawing() {
+        setDrawMode(context);
+        invalidate();
     }
 }

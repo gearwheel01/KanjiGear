@@ -43,7 +43,6 @@ public class KanjiView extends AppCompatActivity {
     private Button viewAddlist;
 
     private DatabaseOpenHelper db;
-    private int strokeWidth = 5;
 
     private Kanji kanji;
     private ArrayList<KanjiMeaning> meanings;

@@ -150,4 +150,14 @@
         android:onClick="addToList"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/wordViewDraw"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/button_paint"
+        android:onClick="openDrawKanji"
+        app:layout_constraintStart_toEndOf="@+id/wordViewWord"
+        app:layout_constraintTop_toBottomOf="@+id/wordViewWritingAlt" />
 </androidx.constraintlayout.widget.ConstraintLayout>

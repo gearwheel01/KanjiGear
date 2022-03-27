@@ -24,6 +24,7 @@
         android:layout_height="48dp"
         android:layout_marginBottom="60dp"
         android:background="@drawable/button_main"
+        android:onClick="pressedDone"
         android:text="done"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,9 +34,20 @@
         android:id="@+id/drawKanjiKanji"
         android:layout_width="320dp"
         android:layout_height="309dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="45dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/drawKanjiHint" />
+
+    <TextView
+        android:id="@+id/drawKanjiHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/drawKanjiContent" />
 

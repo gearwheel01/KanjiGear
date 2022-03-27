@@ -26,6 +26,7 @@ import com.example.kanjigear.db.DatabaseContentLoader;
 import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.views.dictionary.RecyclerAdapterSentence;
+import com.example.kanjigear.views.lesson.DrawKanji;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -49,10 +50,6 @@ public class WordView extends AppCompatActivity {
     private TabLayout viewTabSentence;
     private RecyclerView viewListSentences;
     private Button viewAddlist;
-
-    private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
-        + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
-        +"abcdefghaijklmnopqrstuvwxvzöäüABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ1234567890<>|-_";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,30 +115,13 @@ public class WordView extends AppCompatActivity {
 
 
     public void loadWord(String WID) {
-        db.openDatabaseRead();
-        Cursor c = db.handleQuery("SELECT * FROM word WHERE WID = '" + WID + "';");
-        word = new DatabaseModelLoader().getWordsFromCursor(c).get(0);
-        word.setWordWritings(new DatabaseModelLoader().getWordWritingsFromCursor(db.handleQuery("SELECT * FROM wordwriting WHERE Word_WID = " + WID + ";")));
-        word.setWordReadings(new DatabaseModelLoader().getWordReadingsFromCursor(db.handleQuery("SELECT * FROM wordreading WHERE Word_WID = " + WID + ";")));
-
-        c = db.handleQuery("SELECT * FROM wordmeaning WHERE Word_WID = '" + word.getWID() + "';");
-        word.setTranslations(new DatabaseModelLoader().getWordMeaningsFromCursor(c));
-
-        db.closeDatabase();
+        word = new DatabaseContentLoader().getWord(db, WID);
     }
 
     public void getKanjiInWord() {
         db.openDatabaseRead();
         kanjiInWord = new ArrayList<>();
-        ArrayList<Character> kanji = new ArrayList<>();
-        String writing = word.getWordWritings().get(writingIndex);
-        for (int c = 0; c < writing.length(); c += 1) {
-            char symbol = writing.charAt(c);
-            if ( (!notkanjichars.contains(symbol + "")) && (!kanji.contains(symbol)) ) {
-                kanji.add(symbol);
-            }
-        }
-
+        ArrayList<Character> kanji = word.getKanjiInWord(writingIndex);
         for (int i = 0; i < kanji.size();  i += 1) {
             Cursor c = db.handleQuery("SELECT * FROM kanji WHERE symbol = '" + kanji.get(i) + "';");
             kanjiInWord.addAll(new DatabaseModelLoader().getKanjiFromCursor(c));
@@ -257,5 +237,13 @@ public class WordView extends AppCompatActivity {
             AddToList dialog = new AddToList(this, db, word);
             dialog.showDialog(this);
         }
+    }
+
+    public void openDrawKanji(View v) {
+        Intent intent = new Intent(this, DrawKanji.class);
+        intent.putExtra("symbol", word.getKanjiInWord(writingIndex).get(0) + "");
+        intent.putExtra("WID", word.getWID());
+        intent.putExtra("writingIndex", writingIndex);
+        startActivity(intent);
     }
 }

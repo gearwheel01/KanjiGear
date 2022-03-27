@@ -1,4 +1,4 @@
-package com.example.kanjigear.db;
+package com.example.kanjigear.views.dictionary;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Word;
+import com.example.kanjigear.db.DatabaseContentLoader;
+import com.example.kanjigear.db.DatabaseModelLoader;
+import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.views.dictionary.Dictionary;
 import com.example.kanjigear.views.dictionary.RecyclerAdapterWord;
 

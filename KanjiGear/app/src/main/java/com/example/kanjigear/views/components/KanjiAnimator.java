@@ -30,7 +30,7 @@ public class KanjiAnimator extends Thread {
             }
             view.drawKanji(s, 1);
             try {
-                sleep((long)(sleepTime * 6));
+                sleep((long)(sleepTime * 500));
             } catch (InterruptedException e) {
                 return;
             }

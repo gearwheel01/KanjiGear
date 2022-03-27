@@ -45,6 +45,30 @@ public class DatabaseContentLoader {
         return kanji;
     }
 
+    public Word getWord(DatabaseOpenHelper db, String WID) {
+        db.openDatabaseRead();
+        Cursor c = db.handleQuery("SELECT * FROM word WHERE WID = '" + WID + "';");
+        Word word = new DatabaseModelLoader().getWordsFromCursor(c).get(0);
+        word.setWordWritings(new DatabaseModelLoader().getWordWritingsFromCursor(db.handleQuery("SELECT * FROM wordwriting WHERE Word_WID = " + WID + ";")));
+        word.setWordReadings(new DatabaseModelLoader().getWordReadingsFromCursor(db.handleQuery("SELECT * FROM wordreading WHERE Word_WID = " + WID + ";")));
+
+        c = db.handleQuery("SELECT * FROM wordmeaning WHERE Word_WID = '" + word.getWID() + "';");
+        word.setTranslations(new DatabaseModelLoader().getWordMeaningsFromCursor(c));
+
+        db.closeDatabase();
+        return word;
+    }
+
+    public Sentence getSentence(DatabaseOpenHelper db, String SID) {
+        db.openDatabaseRead();
+        Cursor c = db.handleQuery("SELECT * FROM sentence WHERE SID = " + SID + ";");
+        Sentence sentence = addDetailsToSentences(db, new DatabaseModelLoader().getSentencesFromCursor(c)).get(0);
+        c = db.handleQuery("SELECT w.* FROM word w, sentencecontainsword sw WHERE w.WID = sw.Word_WID AND sw.Sentence_SID = " + sentence.getSID() + ";");
+        sentence.setWords(addDetailsToWords(db, new DatabaseModelLoader().getWordsFromCursor(c)));
+        db.closeDatabase();
+        return sentence;
+    }
+
     public ArrayList<Kanji> addDetailsToKanji(DatabaseOpenHelper db, ArrayList<Kanji> kanji) {
         Cursor c;
         for (int i = 0; i < kanji.size(); i += 1) {

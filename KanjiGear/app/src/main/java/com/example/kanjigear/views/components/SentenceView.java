@@ -23,6 +23,7 @@ import com.example.kanjigear.db.DatabaseContentLoader;
 import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.views.dictionary.RecyclerAdapterWord;
+import com.example.kanjigear.views.lesson.DrawKanji;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,6 @@ public class SentenceView extends AppCompatActivity {
 
     private DatabaseOpenHelper db;
     private Sentence sentence;
-    private ArrayList<Word> words;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class SentenceView extends AppCompatActivity {
 
         viewListWords.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         viewListWords.setItemAnimator(new DefaultItemAnimator());
-        RecyclerAdapterWord adapter = new RecyclerAdapterWord(this, words);
+        RecyclerAdapterWord adapter = new RecyclerAdapterWord(this, sentence.getWords());
         viewListWords.setAdapter(adapter);
     }
 
@@ -68,16 +68,7 @@ public class SentenceView extends AppCompatActivity {
     }
 
     public void loadSentence(String SID) {
-        db.openDatabaseRead();
-        Cursor c = db.handleQuery("SELECT * FROM sentence WHERE SID = " + SID + ";");
-        sentence = new DatabaseContentLoader().addDetailsToSentences(db, new DatabaseModelLoader().getSentencesFromCursor(c)).get(0);
-        loadWords();
-        db.closeDatabase();
-    }
-
-    public void loadWords() {
-        Cursor c = db.handleQuery("SELECT w.* FROM word w, sentencecontainsword sw WHERE w.WID = sw.Word_WID AND sw.Sentence_SID = " + sentence.getSID() + ";");
-        words = new DatabaseContentLoader().addDetailsToWords(db, new DatabaseModelLoader().getWordsFromCursor(c));
+        sentence = new DatabaseContentLoader().getSentence(db, SID);
     }
 
     public void openWord(String WID) {
@@ -119,6 +110,20 @@ public class SentenceView extends AppCompatActivity {
         } else {
             AddToList dialog = new AddToList(this, db, sentence);
             dialog.showDialog(this);
+        }
+    }
+
+    public void openDrawKanji(View v) {
+        if (sentence.getWords().size() > 0) {
+            // TODO check for kanji in word size > 0
+            Word word = sentence.getWords().get(0);
+            int writingIndex = 0;
+            Intent intent = new Intent(this, DrawKanji.class);
+            intent.putExtra("SID", sentence.getSID());
+            intent.putExtra("WID", word.getWID());
+            intent.putExtra("symbol", word.getKanjiInWord(writingIndex).get(0) + "");
+            intent.putExtra("writingIndex", writingIndex);
+            startActivity(intent);
         }
     }
 }
