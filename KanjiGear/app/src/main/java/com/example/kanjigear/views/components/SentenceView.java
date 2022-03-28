@@ -71,9 +71,10 @@ public class SentenceView extends AppCompatActivity {
         sentence = new DatabaseContentLoader().getSentence(db, SID);
     }
 
-    public void openWord(String WID) {
+    public void openWord(Word w) {
         Intent intent = new Intent(this, WordView.class);
-        intent.putExtra("WID", WID);
+        intent.putExtra("WID", w.getWID());
+        intent.putExtra("writingIndex", w.getSentenceWritingIndex());
         if (getIntent().hasExtra("SLID")) {
             intent.putExtra("SLID", getIntent().getStringExtra("SLID"));
         }

@@ -63,7 +63,12 @@ public class WordView extends AppCompatActivity {
 
         loadWord(intent.getStringExtra("WID"));
         loadSentences();
-        updateWriting(0);
+
+        int wi = 0;
+        if (intent.hasExtra("writingIndex")) {
+            wi = intent.getIntExtra("writingIndex",0);
+        }
+        updateWriting(wi);
         viewMeaning.setText(word.getTranslationString(""));
 
         if (word.getWordWritings().size() < 2) {

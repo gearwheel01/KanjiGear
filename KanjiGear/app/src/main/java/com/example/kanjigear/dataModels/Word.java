@@ -9,6 +9,7 @@ public class Word {
     private String WID;
     private int learningProgress;
     private int frequency;
+    private int sentenceWritingIndex = -1;
 
     private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
             + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
@@ -103,10 +104,8 @@ public class Word {
     }
 
     public boolean isLastKanji(int writingIndex, char symbol) {
-        Log.d("word","call method last with " + symbol);
         ArrayList<Character> kanji = getKanjiInWord(writingIndex);
         if (kanji.size() > 0) {
-            Log.d("word","last: " + kanji.get(kanji.size() - 1));
             return (kanji.get(kanji.size() - 1) == symbol);
         }
         return false;
@@ -137,5 +136,13 @@ public class Word {
             }
         }
         return ret;
+    }
+
+    public int getSentenceWritingIndex() {
+        return sentenceWritingIndex;
+    }
+
+    public void setSentenceWritingIndex(int sentenceWritingIndex) {
+        this.sentenceWritingIndex = sentenceWritingIndex;
     }
 }

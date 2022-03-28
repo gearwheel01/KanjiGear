@@ -46,6 +46,15 @@ public class Sentence {
         return words;
     }
 
+    public Word getWord(String WID) {
+        for (int i = 0; i < words.size(); i += 1) {
+            if (words.get(i).getWID().equals(WID)) {
+                return words.get(i);
+            }
+        }
+        return null;
+    }
+
     public void setWords(ArrayList<Word> words) {
         this.words = words;
     }

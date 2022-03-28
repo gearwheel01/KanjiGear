@@ -69,7 +69,11 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
     public void onBindViewHolder(@NonNull RecyclerAdapterWord.wordViewHolder holder, int position) {
         Word w = words.get(position);
         if (w.getWordWritings().size() > 0) {
-            holder.word.setText(w.getWordWritings().get(0) + "(" + w.getWordReadings().get(0) + ")");
+            int writingIndex = 0;
+            if (w.getSentenceWritingIndex() > -1) {
+                writingIndex = w.getSentenceWritingIndex();
+            }
+            holder.word.setText(w.getWordWritings().get(writingIndex) + "(" + w.getWordReadings().get(0) + ")");
         } else {
             holder.word.setText(w.getWordReadings().get(0));
         }
@@ -82,7 +86,7 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
                 contextKanji.openWord(w.getWID());
             }
             if (contextSentence != null) {
-                contextSentence.openWord(w.getWID());
+                contextSentence.openWord(w);
             }
             if (contextList != null) {
                 contextList.openWord(w.getWID());

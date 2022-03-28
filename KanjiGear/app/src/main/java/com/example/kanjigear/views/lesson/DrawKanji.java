@@ -58,8 +58,6 @@ public class DrawKanji extends AppCompatActivity {
 
     public void getContent(String symbol, String WID, int writingIndex, String SID) {
         DatabaseContentLoader loadHelper = new DatabaseContentLoader();
-        kanji = loadHelper.getKanji(db, symbol);
-        strokes = loadHelper.getStrokes(db, kanji);
 
         if (WID != null) {
             word = new DatabaseContentLoader().getWord(db, WID);
@@ -67,7 +65,12 @@ public class DrawKanji extends AppCompatActivity {
         }
         if (SID != null) {
             sentence = new DatabaseContentLoader().getSentence(db, SID);
+            word.setSentenceWritingIndex(sentence.getWord(word.getWID()).getSentenceWritingIndex());
+            this.writingIndex = word.getSentenceWritingIndex();
         }
+
+        kanji = loadHelper.getKanji(db, symbol);
+        strokes = loadHelper.getStrokes(db, kanji);
     }
 
     public void loadResources() {
@@ -112,7 +115,8 @@ public class DrawKanji extends AppCompatActivity {
             char untilKanji = ' ';
             if (word.isLastKanji(writingIndex, kanji.getSymbol().charAt(0))) {
                 if (!sentence.isLastWord(word.getWID())) {
-                    untilKanji = sentence.getNextWord(word.getWID()).getKanjiInWord(writingIndex).get(0);
+                    Word nextWord = sentence.getNextWord(word.getWID());
+                    untilKanji = nextWord.getKanjiInWord(nextWord.getSentenceWritingIndex()).get(0);
                 }
             }
             else {
@@ -148,7 +152,8 @@ public class DrawKanji extends AppCompatActivity {
             if (hasNextDraw()) {
                 if (word.isLastKanji(writingIndex, kanji.getSymbol().charAt(0))) {
                     Word nextWord = sentence.getNextWord(word.getWID());
-                    openDraw(nextWord.getKanjiInWord(writingIndex).get(0)+"", nextWord.getWID(), writingIndex, sentence.getSID());
+                    int wi = nextWord.getSentenceWritingIndex();
+                    openDraw(nextWord.getKanjiInWord(wi).get(0)+"", nextWord.getWID(), wi, sentence.getSID());
                 }
                 else {
                     openDraw(word.getNextKanji(writingIndex, kanji.getSymbol().charAt(0))+"", word.getWID(), writingIndex, sentence.getSID());
@@ -178,7 +183,8 @@ public class DrawKanji extends AppCompatActivity {
             if (getDrawCount() > 1) {
                 if (sentence != null) {
                     Word firstWord = sentence.getWords().get(0);
-                    openDraw(firstWord.getKanjiInWord(writingIndex).get(0)+"", firstWord.getWID(), writingIndex, sentence.getSID());
+                    int wi = firstWord.getSentenceWritingIndex();
+                    openDraw(firstWord.getKanjiInWord(wi).get(0)+"", firstWord.getWID(), wi, sentence.getSID());
                 }
                 else {
                     openDraw(word.getKanjiInWord(writingIndex).get(0)+"", word.getWID(), writingIndex, null);
@@ -198,14 +204,6 @@ public class DrawKanji extends AppCompatActivity {
         viewKanji.setDrawMode(this);
         viewDone.setEnabled(false);
         setViewTexts();
-        Log.d("view", "kanji: " + kanji.getSymbol());
-        Log.d("view", "kanji wanted: " + symbol);
-        if (word != null) {
-            Log.d("view", "word: " + word.getWordWritings().get(writingIndex));
-        }
-        if (sentence != null) {
-            Log.d("view", "sentence: " + sentence.getText());
-        }
     }
 
     public boolean hasNextTask() {

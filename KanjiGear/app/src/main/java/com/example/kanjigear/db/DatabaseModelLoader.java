@@ -26,6 +26,23 @@ public class DatabaseModelLoader {
     }
 
     @SuppressLint("Range")
+    public ArrayList<Word> getWordsInSentenceFromCursor(Cursor c) {
+        ArrayList<Word> words = new ArrayList<>();
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i += 1) {
+            String WID = c.getString(c.getColumnIndex("WID"));
+            int learningProgress = c.getInt(c.getColumnIndex("learningProgress"));
+            int frequency = c.getInt(c.getColumnIndex("frequency"));
+            int writingIndex = c.getInt(c.getColumnIndex("writingindex"));
+            words.add(new Word(WID, learningProgress, frequency));
+            words.get(i).setSentenceWritingIndex(writingIndex);
+            c.moveToNext();
+        }
+        c.close();
+        return words;
+    }
+
+    @SuppressLint("Range")
     public ArrayList<String> getWordReadingsFromCursor(Cursor c) {
         ArrayList<String> readings = new ArrayList<>();
         c.moveToFirst();

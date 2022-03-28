@@ -63,8 +63,8 @@ public class DatabaseContentLoader {
         db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT * FROM sentence WHERE SID = " + SID + ";");
         Sentence sentence = addDetailsToSentences(db, new DatabaseModelLoader().getSentencesFromCursor(c)).get(0);
-        c = db.handleQuery("SELECT w.* FROM word w, sentencecontainsword sw WHERE w.WID = sw.Word_WID AND sw.Sentence_SID = " + sentence.getSID() + ";");
-        sentence.setWords(addDetailsToWords(db, new DatabaseModelLoader().getWordsFromCursor(c)));
+        c = db.handleQuery("SELECT w.*, sw.writingindex FROM word w, sentencecontainsword sw WHERE w.WID = sw.Word_WID AND sw.Sentence_SID = " + sentence.getSID() + ";");
+        sentence.setWords(addDetailsToWords(db, new DatabaseModelLoader().getWordsInSentenceFromCursor(c)));
         db.closeDatabase();
         return sentence;
     }
