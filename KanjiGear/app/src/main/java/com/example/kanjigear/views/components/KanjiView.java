@@ -62,8 +62,8 @@ public class KanjiView extends AppCompatActivity {
         Intent intent = getIntent();
         kanji = new DatabaseContentLoader().getKanji(db, intent.getStringExtra("symbol"));
         viewMeaning.setText(kanji.getMeaningsString(""));
-        viewKUN.setText(kanji.getReadingsString("KUN"));
-        viewON.setText(kanji.getReadingsString("ON"));
+        viewKUN.setText(kanji.getReadingsString("KUN","\n"));
+        viewON.setText(kanji.getReadingsString("ON","\n"));
 
         strokes = new DatabaseContentLoader().getStrokes(db, kanji);
         viewKanji.setStrokes(strokes);

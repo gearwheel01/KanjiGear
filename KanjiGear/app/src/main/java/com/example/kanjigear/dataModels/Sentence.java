@@ -104,4 +104,15 @@ public class Sentence {
         }
         return ret;
     }
+
+    public String getWordReadingString() {
+        String ret = "";
+        for (int i = 0; i < words.size(); i += 1) {
+            ret += words.get(i).getWordReadings().get(0);
+            if (i < words.size() - 1) {
+                ret += ", ";
+            }
+        }
+        return ret;
+    }
 }

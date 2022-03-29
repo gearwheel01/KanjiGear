@@ -71,12 +71,12 @@ public class Kanji {
         return ret;
     }
     // empty string for no type criteria
-    public String getReadingsString(String type) {
+    public String getReadingsString(String type, String inBetween) {
         String ret = "";
         for (int i = 0; i < readings.size(); i += 1) {
             if ( (type.equals("")) || (type.equals(readings.get(i).getType())) ) {
                 if (!ret.equals("")) {
-                    ret += "\n";
+                    ret += inBetween;
                 }
                 ret += readings.get(i).getReading();
             }

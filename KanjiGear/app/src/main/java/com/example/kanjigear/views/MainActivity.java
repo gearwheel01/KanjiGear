@@ -12,6 +12,7 @@ import com.example.kanjigear.db.LoadDatabaseAsync;
 import com.example.kanjigear.views.components.KanjiView;
 import com.example.kanjigear.views.dictionary.Dictionary;
 import com.example.kanjigear.views.lesson.DrawKanji;
+import com.example.kanjigear.views.lesson.SelfCorrection;
 import com.example.kanjigear.views.studyLists.StudyLists;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,8 +34,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openQuickLesson(View v) {
-        Intent intent = new Intent(this, DrawKanji.class);
-        intent.putExtra("symbol", "雲");
+        Intent intent = new Intent(this, SelfCorrection.class);
+        //intent.putExtra("symbol","姆");
+        //intent.putExtra("WID", "4196");
+        //intent.putExtra("writingIndex", "0");
+        intent.putExtra("SID","1");
         startActivity(intent);
     }
 
