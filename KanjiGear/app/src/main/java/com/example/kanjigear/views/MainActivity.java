@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.kanjigear.About;
 import com.example.kanjigear.R;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.db.LoadDatabaseAsync;
@@ -49,6 +50,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void openDictionary(View v) {
         Intent intent = new Intent(this, Dictionary.class);
+        startActivity(intent);
+    }
+
+    public void openSettings(View v) {
+        Intent intent = new Intent(this, Dictionary.class);
+        startActivity(intent);
+    }
+
+    public void openAbout(View v) {
+        Intent intent = new Intent(this, About.class);
         startActivity(intent);
     }
 }

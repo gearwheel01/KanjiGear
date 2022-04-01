@@ -162,6 +162,9 @@ public class WordView extends AppCompatActivity {
             viewTitle.setText(word.getWordWritings().get(i));
             viewReading.setText(word.getWordReadings().get(0));
             getKanjiInWord();
+            if (getIntent().hasExtra("SID")) {
+                saveWordWritingInSentence();
+            }
         } else {
             viewTitle.setText(word.getWordReadings().get(i));
             viewReading.setVisibility(View.INVISIBLE);
@@ -171,6 +174,14 @@ public class WordView extends AppCompatActivity {
             viewKanjiTitle.setVisibility(View.INVISIBLE);
             viewKanjiTitle.setHeight(0);
         }
+    }
+
+    public void saveWordWritingInSentence() {
+        db.openDatabase();
+        ContentValues values = new ContentValues();
+        values.put("writingIndex", writingIndex);
+        db.update("sentencecontainsword", values, "Sentence_SID", getIntent().getStringExtra("SID"), "Word_WID", word.getWID());
+        db.closeDatabase();
     }
 
     public void loadSentences() {

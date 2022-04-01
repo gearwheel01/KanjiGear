@@ -124,11 +124,11 @@ public class Word {
                 ret += c;
             } else {
                 if (hide) {
-                    ret += "_";
+                    ret += "〇";
                 } else {
                     if (c == untilKanji) {
                         hide = true;
-                        ret += "_";
+                        ret += "〇";
                     } else {
                         ret += c;
                     }

@@ -158,22 +158,13 @@ public class StudyListDetails extends AppCompatActivity {
 
 
     public void loadKanji() {
-        db.openDatabaseRead();
-        Cursor c = db.handleQuery("SELECT k.* FROM kanji k,listcontainskanji l WHERE k.symbol=l.Kanji_symbol AND l.StudyList_SLID=" + list.getSLID() + ";");
-        kanji = new DatabaseModelLoader().getKanjiFromCursor(c);
-        db.closeDatabase();
+        kanji = new DatabaseContentLoader().getKanjiInList(db, list.getSLID());
     }
     public void loadWords() {
-        db.openDatabaseRead();
-        Cursor c = db.handleQuery("SELECT w.* FROM word w,listcontainsword l WHERE w.WID=l.Word_WID AND l.StudyList_SLID=" + list.getSLID() + ";");
-        words = new DatabaseContentLoader().addDetailsToWords(db, new DatabaseModelLoader().getWordsFromCursor(c));
-        db.closeDatabase();
+        words = new DatabaseContentLoader().getWordsInList(db, list.getSLID());
     }
     public void loadSentences() {
-        db.openDatabaseRead();
-        Cursor c = db.handleQuery("SELECT s.* FROM sentence s,listcontainssentence l WHERE s.SID=l.Sentence_SID AND l.StudyList_SLID=" + list.getSLID() + ";");
-        sentences = new DatabaseModelLoader().getSentencesFromCursor(c);
-        db.closeDatabase();
+        sentences = new DatabaseContentLoader().getSentencesInList(db, list.getSLID());
     }
 
 

@@ -215,7 +215,8 @@ public class DrawKanji extends AppCompatActivity {
             ArrayList<Word> words = sentence.getWords();
             int ret = 0;
             for (int i = 0; i < words.size(); i += 1) {
-                ret += words.get(i).getKanjiInWord(writingIndex).size();
+                int wi = words.get(i).getSentenceWritingIndex();
+                ret += words.get(i).getKanjiInWord(wi).size();
             }
             return ret;
         }

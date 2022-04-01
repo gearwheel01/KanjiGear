@@ -15,7 +15,7 @@
         android:layout_marginEnd="48dp"
         android:background="@drawable/button_secondary"
         android:onClick="openDictionary"
-        android:text="Dictionary"
+        android:text="Statistics"
         android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_quickLesson2" />
@@ -100,9 +100,10 @@
         android:layout_height="73dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="20dp"
-        android:textSize="18dp"
         android:background="@drawable/button_secondary"
-        android:text="Collection"
+        android:onClick="openDictionary"
+        android:text="Dictionary"
+        android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_quickLesson2" />
 
@@ -112,9 +113,9 @@
         android:layout_height="73dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="20dp"
-        android:textSize="18dp"
         android:background="@drawable/button_secondary"
-        android:text="Statistics"
+        android:text="Settings"
+        android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button3" />
 
@@ -124,9 +125,10 @@
         android:layout_height="73dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="48dp"
-        android:textSize="18dp"
         android:background="@drawable/button_secondary"
-        android:text="Settings"
+        android:onClick="openAbout"
+        android:text="About"
+        android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button4" />
 

@@ -88,6 +88,30 @@ public class DatabaseContentLoader {
         return studyLists;
     }
 
+    public ArrayList<Kanji> getKanjiInList(DatabaseOpenHelper db, String SLID) {
+        db.openDatabaseRead();
+        Cursor c = db.handleQuery("SELECT k.* FROM kanji k,listcontainskanji l WHERE k.symbol=l.Kanji_symbol AND l.StudyList_SLID=" + SLID + ";");
+        ArrayList<Kanji> kanji = new DatabaseModelLoader().getKanjiFromCursor(c);
+        db.closeDatabase();
+        return kanji;
+    }
+
+    public ArrayList<Word> getWordsInList(DatabaseOpenHelper db, String SLID) {
+        db.openDatabaseRead();
+        Cursor c = db.handleQuery("SELECT w.* FROM word w,listcontainsword l WHERE w.WID=l.Word_WID AND l.StudyList_SLID=" + SLID + ";");
+        ArrayList<Word> words = new DatabaseContentLoader().addDetailsToWords(db, new DatabaseModelLoader().getWordsFromCursor(c));
+        db.closeDatabase();
+        return words;
+    }
+
+    public ArrayList<Sentence> getSentencesInList(DatabaseOpenHelper db, String SLID) {
+        db.openDatabaseRead();
+        Cursor c = db.handleQuery("SELECT s.* FROM sentence s,listcontainssentence l WHERE s.SID=l.Sentence_SID AND l.StudyList_SLID=" + SLID + ";");
+        ArrayList<Sentence> sentences = new DatabaseModelLoader().getSentencesFromCursor(c);
+        db.closeDatabase();
+        return  sentences;
+    }
+
     public ArrayList<Stroke> getStrokes(DatabaseOpenHelper db, Kanji kanji) {
         db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT * FROM stroke WHERE Kanji_symbol = '" + kanji.getSymbol() + "';");
