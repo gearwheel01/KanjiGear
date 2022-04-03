@@ -158,12 +158,16 @@ public class WordView extends AppCompatActivity {
 
     public void updateWriting(int i) {
         writingIndex = i;
+        word.setWritingIndex(writingIndex);
         if (word.getWordWritings().size() > 0) {
             viewTitle.setText(word.getWordWritings().get(i));
             viewReading.setText(word.getWordReadings().get(0));
             getKanjiInWord();
             if (getIntent().hasExtra("SID")) {
                 saveWordWritingInSentence();
+            }
+            else if (getIntent().hasExtra("SLID")) {
+                saveWordWritingInList();
             }
         } else {
             viewTitle.setText(word.getWordReadings().get(i));
@@ -179,8 +183,16 @@ public class WordView extends AppCompatActivity {
     public void saveWordWritingInSentence() {
         db.openDatabase();
         ContentValues values = new ContentValues();
-        values.put("writingIndex", writingIndex);
+        values.put("writingindex", writingIndex);
         db.update("sentencecontainsword", values, "Sentence_SID", getIntent().getStringExtra("SID"), "Word_WID", word.getWID());
+        db.closeDatabase();
+    }
+
+    public void saveWordWritingInList() {
+        db.openDatabase();
+        ContentValues values = new ContentValues();
+        values.put("writingindex", writingIndex);
+        db.update("listcontainsword", values, "StudyList_SLID", getIntent().getStringExtra("SLID"), "Word_WID", word.getWID());
         db.closeDatabase();
     }
 
@@ -244,6 +256,8 @@ public class WordView extends AppCompatActivity {
                 ContentValues values = new ContentValues();
                 values.put("StudyList_SLID", SLID);
                 values.put("Word_WID", word.getWID());
+                values.put("writingindex", writingIndex);
+                values.put("nextTestDate", 0);
                 db.openDatabase();
                 db.insert("listcontainsword", values);
                 db.closeDatabase();

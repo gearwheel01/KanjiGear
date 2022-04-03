@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -62,11 +61,19 @@ public class DrawKanji extends AppCompatActivity {
         if (WID != null) {
             word = new DatabaseContentLoader().getWord(db, WID);
             this.writingIndex = writingIndex;
+            if (symbol == null) {
+                symbol = word.getKanjiInWord(writingIndex).get(0) + "";
+            }
         }
         if (SID != null) {
             sentence = new DatabaseContentLoader().getSentence(db, SID);
-            word.setSentenceWritingIndex(sentence.getWord(word.getWID()).getSentenceWritingIndex());
-            this.writingIndex = word.getSentenceWritingIndex();
+            if (word == null) {
+                word = sentence.getWords().get(0);
+                this.writingIndex = word.getWritingIndex();
+                symbol = word.getKanjiInWord(writingIndex).get(0) + "";
+            }
+            word.setWritingIndex(sentence.getWord(word.getWID()).getWritingIndex());
+            this.writingIndex = word.getWritingIndex();
         }
 
         kanji = loadHelper.getKanji(db, symbol);
@@ -116,7 +123,7 @@ public class DrawKanji extends AppCompatActivity {
             if (word.isLastKanji(writingIndex, kanji.getSymbol().charAt(0))) {
                 if (!sentence.isLastWord(word.getWID())) {
                     Word nextWord = sentence.getNextWord(word.getWID());
-                    untilKanji = nextWord.getKanjiInWord(nextWord.getSentenceWritingIndex()).get(0);
+                    untilKanji = nextWord.getKanjiInWord(nextWord.getWritingIndex()).get(0);
                 }
             }
             else {
@@ -152,7 +159,7 @@ public class DrawKanji extends AppCompatActivity {
             if (hasNextDraw()) {
                 if (word.isLastKanji(writingIndex, kanji.getSymbol().charAt(0))) {
                     Word nextWord = sentence.getNextWord(word.getWID());
-                    int wi = nextWord.getSentenceWritingIndex();
+                    int wi = nextWord.getWritingIndex();
                     openDraw(nextWord.getKanjiInWord(wi).get(0)+"", nextWord.getWID(), wi, sentence.getSID());
                 }
                 else {
@@ -178,12 +185,12 @@ public class DrawKanji extends AppCompatActivity {
 
     public void finishTask() {
         if (hasNextTask()) {
-
+            openNextTask();
         } else {
             if (getDrawCount() > 1) {
                 if (sentence != null) {
                     Word firstWord = sentence.getWords().get(0);
-                    int wi = firstWord.getSentenceWritingIndex();
+                    int wi = firstWord.getWritingIndex();
                     openDraw(firstWord.getKanjiInWord(wi).get(0)+"", firstWord.getWID(), wi, sentence.getSID());
                 }
                 else {
@@ -198,6 +205,12 @@ public class DrawKanji extends AppCompatActivity {
         }
     }
 
+    public void openNextTask() {
+        LessonBuilder builder = new LessonBuilder(getApplicationContext());
+        Intent intent = builder.getLessonIntentFromString(getIntent().getStringExtra("lesson"), this);
+        startActivity(intent);
+    }
+
     public void openDraw(String symbol, String WID, int writingIndex, String SID) {
         getContent(symbol, WID, writingIndex, SID);
         viewKanji.setStrokes(strokes);
@@ -207,7 +220,7 @@ public class DrawKanji extends AppCompatActivity {
     }
 
     public boolean hasNextTask() {
-        return false;
+        return getIntent().hasExtra("lesson");
     }
 
     public int getDrawCount() {
@@ -215,7 +228,7 @@ public class DrawKanji extends AppCompatActivity {
             ArrayList<Word> words = sentence.getWords();
             int ret = 0;
             for (int i = 0; i < words.size(); i += 1) {
-                int wi = words.get(i).getSentenceWritingIndex();
+                int wi = words.get(i).getWritingIndex();
                 ret += words.get(i).getKanjiInWord(wi).size();
             }
             return ret;

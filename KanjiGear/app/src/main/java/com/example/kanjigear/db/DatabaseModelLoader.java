@@ -2,7 +2,6 @@ package com.example.kanjigear.db;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.example.kanjigear.dataModels.*;
 
@@ -35,7 +34,26 @@ public class DatabaseModelLoader {
             int frequency = c.getInt(c.getColumnIndex("frequency"));
             int writingIndex = c.getInt(c.getColumnIndex("writingindex"));
             words.add(new Word(WID, learningProgress, frequency));
-            words.get(i).setSentenceWritingIndex(writingIndex);
+            words.get(i).setWritingIndex(writingIndex);
+            c.moveToNext();
+        }
+        c.close();
+        return words;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<Word> getWordsInListFromCursor(Cursor c) {
+        ArrayList<Word> words = new ArrayList<>();
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i += 1) {
+            String WID = c.getString(c.getColumnIndex("WID"));
+            int learningProgress = c.getInt(c.getColumnIndex("learningProgress"));
+            int frequency = c.getInt(c.getColumnIndex("frequency"));
+            int nextTestDate = c.getInt(c.getColumnIndex("nextTestDate"));
+            int writingIndex = c.getInt(c.getColumnIndex("writingindex"));
+            words.add(new Word(WID, learningProgress, frequency));
+            words.get(i).setNextTestDate(nextTestDate);
+            words.get(i).setWritingIndex(writingIndex);
             c.moveToNext();
         }
         c.close();
@@ -107,6 +125,25 @@ public class DatabaseModelLoader {
             int frequency = c.getInt(c.getColumnIndex("frequency"));
             int learningProgress = c.getInt(c.getColumnIndex("learningProgress"));
             kanji.add(new Kanji(symbol,grade, jlpt, frequency, learningProgress));
+            c.moveToNext();
+        }
+        c.close();
+        return kanji;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<Kanji> getKanjiInListFromCursor(Cursor c) {
+        ArrayList<Kanji> kanji = new ArrayList<>();
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i += 1) {
+            String symbol = c.getString(c.getColumnIndex("symbol"));
+            int grade = c.getInt(c.getColumnIndex("grade"));
+            int jlpt = c.getInt(c.getColumnIndex("jlpt"));
+            int frequency = c.getInt(c.getColumnIndex("frequency"));
+            int learningProgress = c.getInt(c.getColumnIndex("learningProgress"));
+            int nextTestDate = c.getInt(c.getColumnIndex("nextTestDate"));
+            kanji.add(new Kanji(symbol,grade, jlpt, frequency, learningProgress));
+            kanji.get(i).setNextTestDate(nextTestDate);
             c.moveToNext();
         }
         c.close();
@@ -203,6 +240,22 @@ public class DatabaseModelLoader {
             String text = c.getString(c.getColumnIndex("text"));
             int learningProgress = c.getInt(c.getColumnIndex("learningProgress"));
             sentences.add(new Sentence(SID, text, learningProgress));
+        }
+        c.close();
+        return sentences;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<Sentence> getSentencesInListFromCursor(Cursor c) {
+        ArrayList<Sentence> sentences = new ArrayList<>();
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i += 1) {
+            String SID = c.getString(c.getColumnIndex("SID"));
+            String text = c.getString(c.getColumnIndex("text"));
+            int learningProgress = c.getInt(c.getColumnIndex("learningProgress"));
+            int nextTestDate = c.getInt(c.getColumnIndex("nextTestDate"));
+            sentences.add(new Sentence(SID, text, learningProgress));
+            sentences.get(i).setNextTestDate(nextTestDate);
         }
         c.close();
         return sentences;

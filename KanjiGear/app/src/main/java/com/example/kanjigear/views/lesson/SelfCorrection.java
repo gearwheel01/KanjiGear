@@ -112,11 +112,18 @@ public class SelfCorrection extends AppCompatActivity {
     }
 
     public void clickedRight(View v) {
-
+        openNextTask();
     }
 
     public void clickedWrong(View v) {
+        openNextTask();
+    }
 
+
+    public void openNextTask() {
+        LessonBuilder builder = new LessonBuilder(getApplicationContext());
+        Intent intent = builder.getLessonIntentFromString(getIntent().getStringExtra("lesson"), this);
+        startActivity(intent);
     }
 
 

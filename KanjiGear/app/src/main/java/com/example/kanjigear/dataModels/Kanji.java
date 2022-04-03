@@ -2,13 +2,14 @@ package com.example.kanjigear.dataModels;
 
 import java.util.ArrayList;
 
-public class Kanji {
+public class Kanji extends LearnElement {
 
     private String symbol;
     private int grade;
     private int jlpt;
     private int frequency;
     private int learningProgress;
+    private int nextTestDate;
 
     private ArrayList<KanjiMeaning> meanings;
     private ArrayList<Reading> readings;
@@ -84,4 +85,15 @@ public class Kanji {
         return ret;
     }
 
+    public int getNextTestDate() {
+        return nextTestDate;
+    }
+
+    public void setNextTestDate(int nextTestDate) {
+        this.nextTestDate = nextTestDate;
+    }
+
+    public String toString() {
+        return symbol;
+    }
 }

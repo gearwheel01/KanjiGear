@@ -1,14 +1,15 @@
 package com.example.kanjigear.db;
 
 import android.database.Cursor;
+import android.util.Log;
 
+import com.example.kanjigear.dataModels.LearnElement;
 import com.example.kanjigear.dataModels.Kanji;
 import com.example.kanjigear.dataModels.Sentence;
 import com.example.kanjigear.dataModels.Stroke;
 import com.example.kanjigear.dataModels.StudyList;
 import com.example.kanjigear.dataModels.Word;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DatabaseContentLoader {
@@ -38,6 +39,7 @@ public class DatabaseContentLoader {
     }
 
     public Kanji getKanji(DatabaseOpenHelper db, String symbol) {
+        Log.d("db", "fetch kanji " + symbol);
         db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT * FROM kanji WHERE symbol = '" + symbol + "';");
         Kanji kanji = addDetailsToKanji(db, new DatabaseModelLoader().getKanjiFromCursor(c)).get(0);
@@ -90,26 +92,26 @@ public class DatabaseContentLoader {
 
     public ArrayList<Kanji> getKanjiInList(DatabaseOpenHelper db, String SLID) {
         db.openDatabaseRead();
-        Cursor c = db.handleQuery("SELECT k.* FROM kanji k,listcontainskanji l WHERE k.symbol=l.Kanji_symbol AND l.StudyList_SLID=" + SLID + ";");
-        ArrayList<Kanji> kanji = new DatabaseModelLoader().getKanjiFromCursor(c);
+        Cursor c = db.handleQuery("SELECT k.*, l.nextTestDate FROM kanji k,listcontainskanji l WHERE k.symbol=l.Kanji_symbol AND l.StudyList_SLID=" + SLID + ";");
+        ArrayList<Kanji> kanji = new DatabaseModelLoader().getKanjiInListFromCursor(c);
         db.closeDatabase();
         return kanji;
     }
 
     public ArrayList<Word> getWordsInList(DatabaseOpenHelper db, String SLID) {
         db.openDatabaseRead();
-        Cursor c = db.handleQuery("SELECT w.* FROM word w,listcontainsword l WHERE w.WID=l.Word_WID AND l.StudyList_SLID=" + SLID + ";");
-        ArrayList<Word> words = new DatabaseContentLoader().addDetailsToWords(db, new DatabaseModelLoader().getWordsFromCursor(c));
+        Cursor c = db.handleQuery("SELECT w.*, l.nextTestDate, l.writingindex FROM word w,listcontainsword l WHERE w.WID=l.Word_WID AND l.StudyList_SLID=" + SLID + ";");
+        ArrayList<Word> words = new DatabaseContentLoader().addDetailsToWords(db, new DatabaseModelLoader().getWordsInListFromCursor(c));
         db.closeDatabase();
         return words;
     }
 
     public ArrayList<Sentence> getSentencesInList(DatabaseOpenHelper db, String SLID) {
         db.openDatabaseRead();
-        Cursor c = db.handleQuery("SELECT s.* FROM sentence s,listcontainssentence l WHERE s.SID=l.Sentence_SID AND l.StudyList_SLID=" + SLID + ";");
-        ArrayList<Sentence> sentences = new DatabaseModelLoader().getSentencesFromCursor(c);
+        Cursor c = db.handleQuery("SELECT s.*, l.nextTestDate FROM sentence s,listcontainssentence l WHERE s.SID=l.Sentence_SID AND l.StudyList_SLID=" + SLID + ";");
+        ArrayList<Sentence> sentences = new DatabaseModelLoader().getSentencesInListFromCursor(c);
         db.closeDatabase();
-        return  sentences;
+        return sentences;
     }
 
     public ArrayList<Stroke> getStrokes(DatabaseOpenHelper db, Kanji kanji) {
@@ -122,6 +124,23 @@ public class DatabaseContentLoader {
         }
         db.closeDatabase();
         return strokes;
+    }
+
+
+    public ArrayList<LearnElement> wordListToElementList(ArrayList<Word> words) {
+        ArrayList<LearnElement> elements = new ArrayList<>();
+        elements.addAll(words);
+        return elements;
+    }
+    public ArrayList<LearnElement> sentenceListToElementList(ArrayList<Sentence> sentences) {
+        ArrayList<LearnElement> elements = new ArrayList<>();
+        elements.addAll(sentences);
+        return elements;
+    }
+    public ArrayList<LearnElement> kanjiListToElementList(ArrayList<Kanji> kanji) {
+        ArrayList<LearnElement> elements = new ArrayList<>();
+        elements.addAll(kanji);
+        return elements;
     }
 
 }

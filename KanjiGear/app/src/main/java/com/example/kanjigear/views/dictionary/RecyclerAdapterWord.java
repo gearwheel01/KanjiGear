@@ -70,8 +70,8 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
         Word w = words.get(position);
         if (w.getWordWritings().size() > 0) {
             int writingIndex = 0;
-            if (w.getSentenceWritingIndex() > -1) {
-                writingIndex = w.getSentenceWritingIndex();
+            if (w.getWritingIndex() > -1) {
+                writingIndex = w.getWritingIndex();
             }
             holder.word.setText(w.getWordWritings().get(writingIndex) + "(" + w.getWordReadings().get(0) + ")");
         } else {
@@ -89,7 +89,7 @@ public class RecyclerAdapterWord extends RecyclerView.Adapter<RecyclerAdapterWor
                 contextSentence.openWord(w);
             }
             if (contextList != null) {
-                contextList.openWord(w.getWID());
+                contextList.openWord(w);
             }
         });
     }

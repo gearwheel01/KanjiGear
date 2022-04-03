@@ -2,13 +2,14 @@ package com.example.kanjigear.dataModels;
 
 import java.util.ArrayList;
 
-public class Sentence {
+public class Sentence extends LearnElement {
 
     private String SID;
     private String text;
     private int learningProgress;
     private ArrayList<SentenceMeaning> meanings;
     private ArrayList<Word> words;
+    private int nextTestDate;
 
     private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
             + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
@@ -114,5 +115,17 @@ public class Sentence {
             }
         }
         return ret;
+    }
+
+    public int getNextTestDate() {
+        return nextTestDate;
+    }
+
+    public void setNextTestDate(int nextTestDate) {
+        this.nextTestDate = nextTestDate;
+    }
+
+    public String toString() {
+        return text;
     }
 }

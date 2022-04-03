@@ -1,15 +1,14 @@
 package com.example.kanjigear.dataModels;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
-public class Word {
+public class Word extends LearnElement {
 
     private String WID;
     private int learningProgress;
     private int frequency;
-    private int sentenceWritingIndex = -1;
+    private int writingIndex = -1;
+    private int nextTestDate;
 
     private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
             + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
@@ -138,11 +137,26 @@ public class Word {
         return ret;
     }
 
-    public int getSentenceWritingIndex() {
-        return sentenceWritingIndex;
+    public int getWritingIndex() {
+        return writingIndex;
     }
 
-    public void setSentenceWritingIndex(int sentenceWritingIndex) {
-        this.sentenceWritingIndex = sentenceWritingIndex;
+    public void setWritingIndex(int writingIndex) {
+        this.writingIndex = writingIndex;
+    }
+
+    public int getNextTestDate() {
+        return nextTestDate;
+    }
+
+    public void setNextTestDate(int nextTestDate) {
+        this.nextTestDate = nextTestDate;
+    }
+
+    public String toString() {
+        if (wordWritings.size() > 0) {
+            return wordWritings.get(0);
+        }
+        return wordReadings.get(0);
     }
 }

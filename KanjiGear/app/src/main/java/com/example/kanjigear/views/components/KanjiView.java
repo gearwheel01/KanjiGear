@@ -198,6 +198,7 @@ public class KanjiView extends AppCompatActivity {
                 ContentValues values = new ContentValues();
                 values.put("StudyList_SLID", SLID);
                 values.put("Kanji_symbol", kanji.getSymbol());
+                values.put("nextTestDate", 0);
                 db.openDatabase();
                 db.insert("listcontainskanji", values);
                 db.closeDatabase();

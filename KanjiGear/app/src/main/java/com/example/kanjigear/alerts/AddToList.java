@@ -118,9 +118,11 @@ public class AddToList {
                 String idName = "";
                 String id = "";
                 values.put("StudyList_SLID", lists.get(i).getSLID());
+                values.put("nextTestDate", 0);
 
                 if (word != null) {
                     values.put("Word_WID", word.getWID());
+                    values.put("writingindex",word.getWritingIndex());
                     tableName = "listcontainsword";
                     idName = "Word_WID";
                     id = word.getWID();

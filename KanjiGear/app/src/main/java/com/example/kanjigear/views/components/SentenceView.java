@@ -7,9 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,15 +15,11 @@ import android.widget.TextView;
 import com.example.kanjigear.R;
 import com.example.kanjigear.alerts.AddToList;
 import com.example.kanjigear.dataModels.Sentence;
-import com.example.kanjigear.dataModels.StudyList;
 import com.example.kanjigear.dataModels.Word;
 import com.example.kanjigear.db.DatabaseContentLoader;
-import com.example.kanjigear.db.DatabaseModelLoader;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.views.dictionary.RecyclerAdapterWord;
 import com.example.kanjigear.views.lesson.DrawKanji;
-
-import java.util.ArrayList;
 
 public class SentenceView extends AppCompatActivity {
 
@@ -74,7 +68,7 @@ public class SentenceView extends AppCompatActivity {
     public void openWord(Word w) {
         Intent intent = new Intent(this, WordView.class);
         intent.putExtra("WID", w.getWID());
-        intent.putExtra("writingIndex", w.getSentenceWritingIndex());
+        intent.putExtra("writingIndex", w.getWritingIndex());
         intent.putExtra("SID", sentence.getSID());
         if (getIntent().hasExtra("SLID")) {
             intent.putExtra("SLID", getIntent().getStringExtra("SLID"));
@@ -104,6 +98,7 @@ public class SentenceView extends AppCompatActivity {
                 ContentValues values = new ContentValues();
                 values.put("StudyList_SLID", SLID);
                 values.put("Sentence_SID", sentence.getSID());
+                values.put("nextTestDate", 0);
                 db.openDatabase();
                 db.insert("listcontainssentence", values);
                 db.closeDatabase();
