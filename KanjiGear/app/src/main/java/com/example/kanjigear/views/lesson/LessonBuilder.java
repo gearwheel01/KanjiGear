@@ -59,10 +59,22 @@ public class LessonBuilder {
 
         String lessonString = "";
         for (int i = 0; i < elementsLesson.size(); i += 1) {
-            lessonString = addTaskToLesson(lessonString, elementsLesson.get(i), 0);
+            LearnElement element = elementsLesson.get(i);
+            if (element.getNextTestDate() == 0) {
+                lessonString = addTaskToLesson(lessonString, elementsLesson.get(i), TASK_ID_SELFCORRECTION);
+            }
+            else {
+                lessonString = addTaskToLesson(lessonString, elementsLesson.get(i), TASK_ID_DRAW);
+            }
         }
         for (int i = 0; i < elementsLesson.size(); i += 1) {
-            lessonString = addTaskToLesson(lessonString, elementsLesson.get(i), 1);
+            LearnElement element = elementsLesson.get(i);
+            if (element.getNextTestDate() == 0) {
+                lessonString = addTaskToLesson(lessonString, elementsLesson.get(i), TASK_ID_DRAW);
+            }
+            else {
+                lessonString = addTaskToLesson(lessonString, elementsLesson.get(i), TASK_ID_SELFCORRECTION);
+            }
         }
         Log.d("lesson", lessonString);
 
@@ -102,7 +114,7 @@ public class LessonBuilder {
             }
         }
         else {
-            intent = new Intent(context, MainActivity.class);
+            intent = null;
         }
 
         return  intent;
@@ -117,27 +129,12 @@ public class LessonBuilder {
         return tokens;
     }
 
-    public String addTaskToLesson(String currentLesson, LearnElement element, int taskNr) {
+    public String addTaskToLesson(String currentLesson, LearnElement element, String type) {
         String addTask = "";
         if (!currentLesson.equals("")) {
             addTask += TASK_ID_TASK_SEP;
         }
-        if (element.getNextTestDate() == 0) {
-            if (taskNr == 0) {
-                addTask += TASK_ID_SELFCORRECTION + TASK_ID_INFO_SEP + elementToTaskString(element);
-            }
-            else {
-                addTask += TASK_ID_DRAW + TASK_ID_INFO_SEP + elementToTaskString(element);
-            }
-        }
-        else {
-            if (taskNr == 0) {
-                addTask += TASK_ID_DRAW + TASK_ID_INFO_SEP + elementToTaskString(element);
-            }
-            else {
-                addTask += TASK_ID_SELFCORRECTION + TASK_ID_INFO_SEP + elementToTaskString(element);
-            }
-        }
+        addTask += type + TASK_ID_INFO_SEP + elementToTaskString(element);
 
         return currentLesson + addTask;
     }
@@ -208,4 +205,12 @@ public class LessonBuilder {
             Log.d("builder",list.get(i).getNextTestDate() + " (" + list.get(i).toString() + ")");
         }
     }
- }
+
+    public String getTASK_ID_SELFCORRECTION() {
+        return TASK_ID_SELFCORRECTION;
+    }
+
+    public String getTASK_ID_DRAW() {
+        return TASK_ID_DRAW;
+    }
+}

@@ -25,6 +25,7 @@ public class KanjiGraphicView extends View {
     private int strokeWidth;
 
     private ArrayList<Path> drawnStrokes;
+    private ArrayList<Integer> scores;
     private boolean drawMode = false;
     private int drawTolerance;
     private int drawStroke;
@@ -59,6 +60,7 @@ public class KanjiGraphicView extends View {
         drawUntilStroke = 0;
         drawStroke = 0;
         drawnStrokes = new ArrayList<>();
+        scores = new ArrayList<>();
     }
 
     @Override
@@ -109,14 +111,16 @@ public class KanjiGraphicView extends View {
                     path.lineTo(x, y);
                     break;
                 case MotionEvent.ACTION_UP:
-                    if (comparePaths(strokes.get(drawStroke).getPath(), path) > 10) {
+                    int score = comparePaths(strokes.get(drawStroke).getPath(), path);
+                    scores.add(score);
+                    if (score > 10) {
                         drawnStrokes.add(path);
                         drawStroke += 1;
                         drawUntilStroke += 1;
 
                         if (drawStroke >= strokes.size()) {
                             drawMode = false;
-                            context.finishedDrawing();
+                            context.finishedDrawing(getScoreAverage());
                         }
                     }
                     path = new Path();
@@ -130,6 +134,14 @@ public class KanjiGraphicView extends View {
         return true;
     }
 
+    private int getScoreAverage() {
+        int ret = 0;
+        for(int i = 0; i < scores.size(); i += 1) {
+            ret += scores.get(i);
+        }
+        return (ret / scores.size());
+    }
+
     public void transformPaths() {
         if ( (strokes != null) && (getWidth() > 0) ) {
             for (int i = 0; i < strokes.size(); i += 1) {
@@ -140,7 +152,6 @@ public class KanjiGraphicView extends View {
         strokeWidth = strokeWidth * (getWidth() / 109);
         paint.setStrokeWidth(strokeWidth);
         drawTolerance = (int)(getWidth() * 0.1);
-        Log.d("path","tolerance: " + drawTolerance);
     }
 
     public void updateStrokeDrawDetails(int drawUntilStroke, float lastStrokeLength) {
@@ -162,7 +173,6 @@ public class KanjiGraphicView extends View {
         }
         distance /=  sampleCounter;
         int ret = Math.max(0, (int)((100 - ((distance / drawTolerance) * 100))));
-        Log.d("pathcalc","score: " + ret);
         return ret;
     }
 

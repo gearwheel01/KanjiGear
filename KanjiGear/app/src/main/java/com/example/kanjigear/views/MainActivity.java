@@ -39,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
         LessonBuilder builder = new LessonBuilder(getApplicationContext());
         String lesson = builder.buildLesson();
         Intent intent = builder.getLessonIntentFromString(lesson, this);
-        startActivity(intent);
+        if (intent != null) {
+            startActivity(intent);
+        }
     }
 
     public void openStudyLists(View v) {

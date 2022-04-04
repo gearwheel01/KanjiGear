@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Kanji;
+import com.example.kanjigear.dataModels.LearnElement;
 import com.example.kanjigear.dataModels.Sentence;
 import com.example.kanjigear.dataModels.Stroke;
 import com.example.kanjigear.dataModels.Word;
@@ -32,6 +34,9 @@ public class DrawKanji extends AppCompatActivity {
     private Sentence sentence;
     private ArrayList<Stroke> strokes;
 
+    private ArrayList<Integer> scores;
+    private final int MINIMUM_SCORE_REQUIREMENT = 40;
+
     private DatabaseOpenHelper db;
 
     @Override
@@ -40,6 +45,7 @@ public class DrawKanji extends AppCompatActivity {
         setContentView(R.layout.activity_draw_kanji);
         loadResources();
 
+        scores = new ArrayList<>();
         Intent intent = getIntent();
         String intentWID = null;
         int intentWIndex = 0;
@@ -60,6 +66,7 @@ public class DrawKanji extends AppCompatActivity {
 
         if (WID != null) {
             word = new DatabaseContentLoader().getWord(db, WID);
+            word.setWritingIndex(writingIndex);
             this.writingIndex = writingIndex;
             if (symbol == null) {
                 symbol = word.getKanjiInWord(writingIndex).get(0) + "";
@@ -149,7 +156,9 @@ public class DrawKanji extends AppCompatActivity {
         return false;
     }
 
-    public void finishedDrawing() {
+    public void finishedDrawing(int score) {
+        Log.d("draw", "score: " + score);
+        scores.add(score);
         viewDone.setEnabled(true);
         setViewContentNotHidden();
     }
@@ -185,7 +194,17 @@ public class DrawKanji extends AppCompatActivity {
 
     public void finishTask() {
         if (hasNextTask()) {
-            openNextTask();
+            Log.d("draw", "final score: " + getScoreAverage());
+            int score = getScoreAverage();
+            if (score >= MINIMUM_SCORE_REQUIREMENT) {
+                openNextTask(getIntent().getStringExtra("lesson"));
+            }
+            else {
+                String lesson = getIntent().getStringExtra("lesson");
+                LessonBuilder builder = new LessonBuilder(getApplicationContext());
+                lesson = builder.addTaskToLesson(lesson, getElement(), builder.getTASK_ID_DRAW());
+                openNextTask(lesson);
+            }
         } else {
             if (getDrawCount() > 1) {
                 if (sentence != null) {
@@ -205,10 +224,13 @@ public class DrawKanji extends AppCompatActivity {
         }
     }
 
-    public void openNextTask() {
+    public void openNextTask(String lesson) {
         LessonBuilder builder = new LessonBuilder(getApplicationContext());
-        Intent intent = builder.getLessonIntentFromString(getIntent().getStringExtra("lesson"), this);
-        startActivity(intent);
+        Intent intent = builder.getLessonIntentFromString(lesson, this);
+        if (intent != null) {
+            startActivity(intent);
+        }
+        finish();
     }
 
     public void openDraw(String symbol, String WID, int writingIndex, String SID) {
@@ -237,5 +259,26 @@ public class DrawKanji extends AppCompatActivity {
             return word.getKanjiInWord(writingIndex).size();
         }
         return 1;
+    }
+
+    private int getScoreAverage() {
+        int ret = 0;
+        for(int i = 0; i < scores.size(); i += 1) {
+            ret += scores.get(i);
+        }
+        return (ret / scores.size());
+    }
+
+    public LearnElement getElement() {
+        if (sentence != null) {
+            return sentence;
+        }
+        if (word != null) {
+            return word;
+        }
+        if (kanji != null) {
+            return kanji;
+        }
+        return null;
     }
 }

@@ -39,7 +39,6 @@ public class DatabaseContentLoader {
     }
 
     public Kanji getKanji(DatabaseOpenHelper db, String symbol) {
-        Log.d("db", "fetch kanji " + symbol);
         db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT * FROM kanji WHERE symbol = '" + symbol + "';");
         Kanji kanji = addDetailsToKanji(db, new DatabaseModelLoader().getKanjiFromCursor(c)).get(0);

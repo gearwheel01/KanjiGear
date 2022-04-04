@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Kanji;
+import com.example.kanjigear.dataModels.LearnElement;
 import com.example.kanjigear.dataModels.Sentence;
 import com.example.kanjigear.dataModels.Word;
 import com.example.kanjigear.db.DatabaseContentLoader;
@@ -73,6 +74,7 @@ public class SelfCorrection extends AppCompatActivity {
         }
         if (WID != null) {
             word = loadHelper.getWord(db, WID);
+            word.setWritingIndex(writingIndex);
             this.writingIndex = writingIndex;
         }
         if (SID != null) {
@@ -112,18 +114,36 @@ public class SelfCorrection extends AppCompatActivity {
     }
 
     public void clickedRight(View v) {
-        openNextTask();
+        openNextTask(getIntent().getStringExtra("lesson"));
     }
 
     public void clickedWrong(View v) {
-        openNextTask();
+        String lesson = getIntent().getStringExtra("lesson");
+        LessonBuilder builder = new LessonBuilder(getApplicationContext());
+        lesson = builder.addTaskToLesson(lesson, getElement(), builder.getTASK_ID_SELFCORRECTION());
+        openNextTask(lesson);
     }
 
+    public LearnElement getElement() {
+        if (sentence != null) {
+            return sentence;
+        }
+        if (word != null) {
+            return word;
+        }
+        if (kanji != null) {
+            return kanji;
+        }
+        return null;
+    }
 
-    public void openNextTask() {
+    public void openNextTask(String lesson) {
         LessonBuilder builder = new LessonBuilder(getApplicationContext());
-        Intent intent = builder.getLessonIntentFromString(getIntent().getStringExtra("lesson"), this);
-        startActivity(intent);
+        Intent intent = builder.getLessonIntentFromString(lesson, this);
+        if (intent != null) {
+            startActivity(intent);
+        }
+        finish();
     }
 
 
