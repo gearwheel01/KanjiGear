@@ -35,6 +35,10 @@ public class KanjiGraphicView extends View {
     private int drawUntilStroke;
     private float lastStrokeLength;
 
+    private final float TOLERANCE_PERCENTAGE = 0.2f;
+    private final int BAD_STROKE_PUNISHMENT = -100;
+    private final int STROKE_QUALITY_MINIMUM = 50;
+
     public KanjiGraphicView(Context context, AttributeSet attributes) {
         super(context, attributes);
         paint.setAntiAlias(true);
@@ -112,8 +116,13 @@ public class KanjiGraphicView extends View {
                     break;
                 case MotionEvent.ACTION_UP:
                     int score = comparePaths(strokes.get(drawStroke).getPath(), path);
-                    scores.add(score);
-                    if (score > 10) {
+                    if (score >= STROKE_QUALITY_MINIMUM) {
+                        scores.add(score);
+                    }
+                    else {
+                        scores.add(BAD_STROKE_PUNISHMENT);
+                    }
+                    if (score >= STROKE_QUALITY_MINIMUM) {
                         drawnStrokes.add(path);
                         drawStroke += 1;
                         drawUntilStroke += 1;
@@ -151,7 +160,7 @@ public class KanjiGraphicView extends View {
         }
         strokeWidth = strokeWidth * (getWidth() / 109);
         paint.setStrokeWidth(strokeWidth);
-        drawTolerance = (int)(getWidth() * 0.1);
+        drawTolerance = (int)(getWidth() * TOLERANCE_PERCENTAGE);
     }
 
     public void updateStrokeDrawDetails(int drawUntilStroke, float lastStrokeLength) {
@@ -163,7 +172,7 @@ public class KanjiGraphicView extends View {
     public int comparePaths(Path p1, Path p2) {
         int sampleCounter = 0;
         float distance = 0;
-        for (float i = 0f; i < 1; i += 0.1f) {
+        for (float i = 0f; i < 1; i += 0.05f) {
             sampleCounter += 1;
             float[] coords1 = getPathCoords(p1, i);
             float[] coords2 = getPathCoords(p2, i);
@@ -173,6 +182,7 @@ public class KanjiGraphicView extends View {
         }
         distance /=  sampleCounter;
         int ret = Math.max(0, (int)((100 - ((distance / drawTolerance) * 100))));
+        Log.d("score", ret + "");
         return ret;
     }
 

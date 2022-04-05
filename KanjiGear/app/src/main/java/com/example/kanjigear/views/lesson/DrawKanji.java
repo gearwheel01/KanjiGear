@@ -35,7 +35,7 @@ public class DrawKanji extends AppCompatActivity {
     private ArrayList<Stroke> strokes;
 
     private ArrayList<Integer> scores;
-    private final int MINIMUM_SCORE_REQUIREMENT = 40;
+    private final int MINIMUM_SCORE_REQUIREMENT = 50;
 
     private DatabaseOpenHelper db;
 
@@ -161,6 +161,12 @@ public class DrawKanji extends AppCompatActivity {
         scores.add(score);
         viewDone.setEnabled(true);
         setViewContentNotHidden();
+        if (getScoreAverage() >= MINIMUM_SCORE_REQUIREMENT) {
+            viewDone.setBackgroundResource(R.color.button_green);
+        }
+        else {
+            viewDone.setBackgroundResource(R.color.purple_500);
+        }
     }
 
     public void pressedDone(View v) {
