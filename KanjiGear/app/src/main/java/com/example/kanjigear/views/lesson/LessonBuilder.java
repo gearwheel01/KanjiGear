@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 public class LessonBuilder {
 
     private DatabaseOpenHelper db;
+    private Context context;
 
     private ArrayList<StudyList> lists;
     private ArrayList<LearnElement> elementsNew;
@@ -36,6 +37,7 @@ public class LessonBuilder {
 
     private final String TASK_ID_SELFCORRECTION = "S";
     private final String TASK_ID_DRAW = "D";
+
     private final String TASK_ID_TASK_SEP = ",";
 
     private final String TASK_ID_SENTENCE = "SID";
@@ -46,6 +48,7 @@ public class LessonBuilder {
 
     public LessonBuilder(Context context) {
         db = new DatabaseOpenHelper(context);
+        this.context = context;
     }
 
     public String buildLesson() {
@@ -81,7 +84,7 @@ public class LessonBuilder {
         return lessonString;
     }
 
-    public Intent getLessonIntentFromString(String lessonString, Context context) {
+    public Intent getLessonIntentFromString(String lessonString, String originalLesson) {
         Intent intent;
 
         if (lessonString.length() > 1) {
@@ -89,8 +92,8 @@ public class LessonBuilder {
             ArrayList<String> taskDetails = getTokens(task, TASK_ID_INFO_SEP);
 
             String type = taskDetails.get(0);
-            String element = taskDetails.get(1);
-            String id = taskDetails.get(2);
+            String element = taskDetails.get(2);
+            String id = taskDetails.get(3);
 
             String newLesson = "";
             int afterFirstTask = lessonString.indexOf(TASK_ID_TASK_SEP) + 1;
@@ -98,7 +101,6 @@ public class LessonBuilder {
                 newLesson = lessonString.substring(afterFirstTask);
             }
 
-            Log.d("lesson", "task: " + type + ", " + element + ", " + id);
             Log.d("lesson", "remaining lesson: " + newLesson);
 
             if (type.equals(TASK_ID_DRAW)) {
@@ -108,13 +110,15 @@ public class LessonBuilder {
                 intent = new Intent(context, SelfCorrection.class);
             }
             intent.putExtra(element, id);
+            intent.putExtra("originalLesson", originalLesson);
             intent.putExtra("lesson", newLesson);
             if (element.equals(TASK_ID_WORD)) {
-                intent.putExtra("writingIndex", Integer.parseInt(taskDetails.get(3)));
+                intent.putExtra("writingIndex", Integer.parseInt(taskDetails.get(4)));
             }
         }
         else {
             intent = null;
+            rescheduleAllElements(originalLesson);
         }
 
         return  intent;
@@ -134,7 +138,7 @@ public class LessonBuilder {
         if (!currentLesson.equals("")) {
             addTask += TASK_ID_TASK_SEP;
         }
-        addTask += type + TASK_ID_INFO_SEP + elementToTaskString(element);
+        addTask += type + TASK_ID_INFO_SEP + element.getInList() + TASK_ID_INFO_SEP + elementToTaskString(element);
 
         return currentLesson + addTask;
     }
@@ -198,12 +202,56 @@ public class LessonBuilder {
         }
     }
 
+    public void rescheduleAllElements(String lesson) {
+        ArrayList<LearnElement> elements = getElementsInLesson(lesson);
+        ProgressManager progress = new ProgressManager(context);
+        for (int i = 0; i < elements.size(); i += 1) {
+            progress.scheduleNextRevision(elements.get(i));
+        }
+    }
+
 
     public void logList(ArrayList<LearnElement> list) {
         Log.d("builder","log List");
         for (int i = 0; i < list.size(); i += 1) {
             Log.d("builder",list.get(i).getNextTestDate() + " (" + list.get(i).toString() + ")");
         }
+    }
+
+    public ArrayList<LearnElement> getElementsInLesson(String lesson) {
+        ArrayList<LearnElement> elements = new ArrayList<>();
+        ArrayList<String> addedKanji = new ArrayList<>();
+        ArrayList<String> addedWords = new ArrayList<>();
+        ArrayList<String> addedSentences = new ArrayList<>();
+
+        DatabaseContentLoader loader = new DatabaseContentLoader();
+        ArrayList<String> tasks = getTokens(lesson, TASK_ID_TASK_SEP);
+        for (int i = 0; i < tasks.size(); i += 1) {
+            ArrayList<String> details = getTokens(tasks.get(i), TASK_ID_INFO_SEP);
+            String SLID = details.get(1);
+            String type = details.get(2);
+            String id = details.get(3);
+            if ( (type.equals(TASK_ID_KANJI)) && (!addedKanji.contains(id)) ) {
+                Kanji k = loader.getKanji(db, id);
+                k.setInList(SLID);
+                elements.add(k);
+                addedKanji.add(id);
+            }
+            if ( (type.equals(TASK_ID_WORD)) && (!addedWords.contains(id)) ) {
+                Word w = loader.getWord(db, id);
+                w.setInList(SLID);
+                elements.add(w);
+                addedWords.add(id);
+            }
+            if ( (type.equals(TASK_ID_SENTENCE)) && (!addedSentences.contains(id)) ) {
+                Sentence s = loader.getSentence(db, id);
+                s.setInList(SLID);
+                elements.add(s);
+                addedSentences.add(id);
+            }
+        }
+
+        return elements;
     }
 
     public String getTASK_ID_SELFCORRECTION() {

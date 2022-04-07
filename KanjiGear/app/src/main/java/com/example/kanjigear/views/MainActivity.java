@@ -36,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openQuickLesson(View v) {
-        LessonBuilder builder = new LessonBuilder(getApplicationContext());
+        LessonBuilder builder = new LessonBuilder(this);
         String lesson = builder.buildLesson();
-        Intent intent = builder.getLessonIntentFromString(lesson, this);
+        Intent intent = builder.getLessonIntentFromString(lesson, lesson);
         if (intent != null) {
             startActivity(intent);
         }

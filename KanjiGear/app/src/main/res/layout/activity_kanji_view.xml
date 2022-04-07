@@ -52,7 +52,7 @@
         app:layout_constraintTop_toTopOf="@+id/kanjiViewKanji" />
 
     <ProgressBar
-        android:id="@+id/progressBar2"
+        android:id="@+id/kanjiViewProgress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="282dp"
         android:layout_height="30dp"

@@ -157,7 +157,6 @@ public class DrawKanji extends AppCompatActivity {
     }
 
     public void finishedDrawing(int score) {
-        Log.d("draw", "score: " + score);
         scores.add(score);
         viewDone.setEnabled(true);
         setViewContentNotHidden();
@@ -200,16 +199,13 @@ public class DrawKanji extends AppCompatActivity {
 
     public void finishTask() {
         if (hasNextTask()) {
-            Log.d("draw", "final score: " + getScoreAverage());
             int score = getScoreAverage();
+            ProgressManager progress = new ProgressManager(getApplicationContext());
             if (score >= MINIMUM_SCORE_REQUIREMENT) {
-                openNextTask(getIntent().getStringExtra("lesson"));
+                openNextTask(true);
             }
             else {
-                String lesson = getIntent().getStringExtra("lesson");
-                LessonBuilder builder = new LessonBuilder(getApplicationContext());
-                lesson = builder.addTaskToLesson(lesson, getElement(), builder.getTASK_ID_DRAW());
-                openNextTask(lesson);
+                openNextTask(false);
             }
         } else {
             if (getDrawCount() > 1) {
@@ -230,12 +226,24 @@ public class DrawKanji extends AppCompatActivity {
         }
     }
 
-    public void openNextTask(String lesson) {
-        LessonBuilder builder = new LessonBuilder(getApplicationContext());
-        Intent intent = builder.getLessonIntentFromString(lesson, this);
-        if (intent != null) {
-            startActivity(intent);
+    public void openNextTask(boolean right) {
+        LessonBuilder builder = new LessonBuilder(this);
+        Intent intent = getIntent();
+        String lesson = intent.getStringExtra("lesson");
+        String originalLesson = intent.getStringExtra("originalLesson");
+
+        ProgressManager progress = new ProgressManager(this);
+        progress.updateElementProgress(getElement(), right);
+
+        if (!right) {
+            lesson = builder.addTaskToLesson(lesson, getElement(), builder.getTASK_ID_DRAW());
         }
+
+        Intent nextTask = builder.getLessonIntentFromString(lesson, originalLesson);
+        if (nextTask != null) {
+            startActivity(nextTask);
+        }
+
         finish();
     }
 

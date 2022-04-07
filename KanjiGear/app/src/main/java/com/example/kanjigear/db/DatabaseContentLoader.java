@@ -93,6 +93,9 @@ public class DatabaseContentLoader {
         db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT k.*, l.nextTestDate FROM kanji k,listcontainskanji l WHERE k.symbol=l.Kanji_symbol AND l.StudyList_SLID=" + SLID + ";");
         ArrayList<Kanji> kanji = new DatabaseModelLoader().getKanjiInListFromCursor(c);
+        for (int i = 0; i < kanji.size(); i += 1) {
+            kanji.get(i).setInList(SLID);
+        }
         db.closeDatabase();
         return kanji;
     }
@@ -101,6 +104,9 @@ public class DatabaseContentLoader {
         db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT w.*, l.nextTestDate, l.writingindex FROM word w,listcontainsword l WHERE w.WID=l.Word_WID AND l.StudyList_SLID=" + SLID + ";");
         ArrayList<Word> words = new DatabaseContentLoader().addDetailsToWords(db, new DatabaseModelLoader().getWordsInListFromCursor(c));
+        for (int i = 0; i < words.size(); i += 1) {
+            words.get(i).setInList(SLID);
+        }
         db.closeDatabase();
         return words;
     }
@@ -109,6 +115,9 @@ public class DatabaseContentLoader {
         db.openDatabaseRead();
         Cursor c = db.handleQuery("SELECT s.*, l.nextTestDate FROM sentence s,listcontainssentence l WHERE s.SID=l.Sentence_SID AND l.StudyList_SLID=" + SLID + ";");
         ArrayList<Sentence> sentences = new DatabaseModelLoader().getSentencesInListFromCursor(c);
+        for (int i = 0; i < sentences.size(); i += 1) {
+            sentences.get(i).setInList(SLID);
+        }
         db.closeDatabase();
         return sentences;
     }

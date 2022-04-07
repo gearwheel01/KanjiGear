@@ -182,7 +182,6 @@ public class KanjiGraphicView extends View {
         }
         distance /=  sampleCounter;
         int ret = Math.max(0, (int)((100 - ((distance / drawTolerance) * 100))));
-        Log.d("score", ret + "");
         return ret;
     }
 

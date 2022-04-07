@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.kanjigear.R;
@@ -27,6 +28,7 @@ public class SentenceView extends AppCompatActivity {
     private TextView viewMeaning;
     private RecyclerView viewListWords;
     private Button viewAddlist;
+    private ProgressBar viewProgress;
 
     private DatabaseOpenHelper db;
     private Sentence sentence;
@@ -42,6 +44,7 @@ public class SentenceView extends AppCompatActivity {
 
         viewText.setText(sentence.getText());
         viewMeaning.setText(sentence.getMeanings().get(0).getMeaning());
+        viewProgress.setProgress(sentence.getLearningProgress());
 
         if (intent.hasExtra("SLID")) {
             updateAddlistButton();
@@ -59,6 +62,7 @@ public class SentenceView extends AppCompatActivity {
         viewMeaning = findViewById(R.id.sentenceViewMeaning);
         viewListWords = findViewById(R.id.sentenceViewListWords);
         viewAddlist = findViewById(R.id.sentenceViewAddlist);
+        viewProgress = findViewById(R.id.sentenceViewProgress);
     }
 
     public void loadSentence(String SID) {

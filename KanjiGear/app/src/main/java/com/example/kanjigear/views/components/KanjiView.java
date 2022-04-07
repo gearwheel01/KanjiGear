@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.kanjigear.R;
@@ -41,6 +42,7 @@ public class KanjiView extends AppCompatActivity {
     private RecyclerView viewWords;
     private TabLayout viewWordTabs;
     private Button viewAddlist;
+    private ProgressBar viewProgress;
 
     private DatabaseOpenHelper db;
 
@@ -64,6 +66,7 @@ public class KanjiView extends AppCompatActivity {
         viewMeaning.setText(kanji.getMeaningsString(""));
         viewKUN.setText(kanji.getReadingsString("KUN","\n"));
         viewON.setText(kanji.getReadingsString("ON","\n"));
+        viewProgress.setProgress(kanji.getLearningProgress());
 
         strokes = new DatabaseContentLoader().getStrokes(db, kanji);
         viewKanji.setStrokes(strokes);
@@ -109,6 +112,7 @@ public class KanjiView extends AppCompatActivity {
         viewWords = findViewById(R.id.kanjiViewListKanji);
         viewWordTabs = findViewById(R.id.kanjiViewTab);
         viewAddlist = findViewById(R.id.kanjiViewAddlist);
+        viewProgress = findViewById(R.id.kanjiViewProgress);
         db = new DatabaseOpenHelper(getApplicationContext());
     }
 

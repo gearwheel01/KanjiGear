@@ -114,14 +114,11 @@ public class SelfCorrection extends AppCompatActivity {
     }
 
     public void clickedRight(View v) {
-        openNextTask(getIntent().getStringExtra("lesson"));
+        openNextTask(true);
     }
 
     public void clickedWrong(View v) {
-        String lesson = getIntent().getStringExtra("lesson");
-        LessonBuilder builder = new LessonBuilder(getApplicationContext());
-        lesson = builder.addTaskToLesson(lesson, getElement(), builder.getTASK_ID_SELFCORRECTION());
-        openNextTask(lesson);
+        openNextTask(false);
     }
 
     public LearnElement getElement() {
@@ -137,12 +134,24 @@ public class SelfCorrection extends AppCompatActivity {
         return null;
     }
 
-    public void openNextTask(String lesson) {
-        LessonBuilder builder = new LessonBuilder(getApplicationContext());
-        Intent intent = builder.getLessonIntentFromString(lesson, this);
-        if (intent != null) {
-            startActivity(intent);
+    public void openNextTask(boolean right) {
+        LessonBuilder builder = new LessonBuilder(this);
+        Intent intent = getIntent();
+        String lesson = intent.getStringExtra("lesson");
+        String originalLesson = intent.getStringExtra("originalLesson");
+
+        ProgressManager progress = new ProgressManager(this);
+        progress.updateElementProgress(getElement(), right);
+
+        if (!right) {
+            lesson = builder.addTaskToLesson(lesson, getElement(), builder.getTASK_ID_SELFCORRECTION());
         }
+
+        Intent nextTask = builder.getLessonIntentFromString(lesson, originalLesson);
+        if (nextTask != null) {
+            startActivity(nextTask);
+        }
+
         finish();
     }
 

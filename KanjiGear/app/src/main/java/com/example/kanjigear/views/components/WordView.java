@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.kanjigear.R;
@@ -50,6 +51,7 @@ public class WordView extends AppCompatActivity {
     private TabLayout viewTabSentence;
     private RecyclerView viewListSentences;
     private Button viewAddlist;
+    private ProgressBar viewProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class WordView extends AppCompatActivity {
 
         loadWord(intent.getStringExtra("WID"));
         loadSentences();
+        viewProgress.setProgress(word.getLearningProgress());
 
         int wi = 0;
         if (intent.hasExtra("writingIndex")) {
@@ -116,6 +119,7 @@ public class WordView extends AppCompatActivity {
         viewTabSentence = findViewById(R.id.wordViewTabSentence);
         viewListSentences = findViewById(R.id.wordViewListSentences);
         viewAddlist = findViewById(R.id.wordViewAddlist);
+        viewProgress = findViewById(R.id.wordViewProgress);
     }
 
 
