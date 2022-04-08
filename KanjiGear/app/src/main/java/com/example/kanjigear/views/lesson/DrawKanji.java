@@ -164,7 +164,7 @@ public class DrawKanji extends AppCompatActivity {
             viewDone.setBackgroundResource(R.color.button_green);
         }
         else {
-            viewDone.setBackgroundResource(R.color.purple_500);
+            viewDone.setBackgroundResource(R.color.button_red);
         }
     }
 
@@ -221,6 +221,7 @@ public class DrawKanji extends AppCompatActivity {
             else {
                 viewKanji.resetDrawing();
                 viewDone.setEnabled(false);
+                viewDone.setBackgroundResource(R.color.button_gray);
                 setViewContentHidden();
             }
         }
@@ -252,6 +253,7 @@ public class DrawKanji extends AppCompatActivity {
         viewKanji.setStrokes(strokes);
         viewKanji.setDrawMode(this);
         viewDone.setEnabled(false);
+        viewDone.setBackgroundResource(R.color.button_gray);
         setViewTexts();
     }
 

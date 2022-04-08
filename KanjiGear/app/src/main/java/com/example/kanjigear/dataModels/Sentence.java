@@ -13,7 +13,7 @@ public class Sentence extends LearnElement {
 
     private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
             + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
-            +"abcdefghaijklmnopqrstuvwxvzöäüABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ1234567890<>|-_+.:,;。．.・／１２３４５６７８９０";
+            +"abcdefghaijklmnopqrstuvwxvzöäüABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ1234567890<>|-_+.:,;。、．.・／１２３４５６７８９０";
 
     public Sentence(String SID, String text, int learningProgress) {
         this.SID = SID;
@@ -30,6 +30,8 @@ public class Sentence extends LearnElement {
     public String getText() {
         return text;
     }
+
+    public void setText(String text) {this.text = text;}
 
     public int getLearningProgress() {
         return learningProgress;
@@ -115,6 +117,16 @@ public class Sentence extends LearnElement {
             }
         }
         return ret;
+    }
+
+    public ArrayList<Integer> getKanjiIndexesInSentence() {
+        ArrayList<Integer> kanji = new ArrayList<>();
+        for (int i = 0; i < text.length(); i += 1) {
+            if (!notkanjichars.contains(text.charAt(i)+"")) {
+                kanji.add(i);
+            }
+        }
+        return kanji;
     }
 
     public int getNextTestDate() {

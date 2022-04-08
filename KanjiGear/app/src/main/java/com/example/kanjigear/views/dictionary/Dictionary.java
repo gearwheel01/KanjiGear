@@ -9,17 +9,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Telephony;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Kanji;
-import com.example.kanjigear.dataModels.LearnElement;
 import com.example.kanjigear.dataModels.Sentence;
 import com.example.kanjigear.dataModels.Word;
 import com.example.kanjigear.views.components.KanjiView;
@@ -141,6 +138,14 @@ public class Dictionary extends AppCompatActivity {
     public void openKanji(String symbol) {
         Intent intent = new Intent(this, KanjiView.class);
         intent.putExtra("symbol", symbol);
+        if (getIntent().hasExtra("SLID")) {
+            intent.putExtra("SLID", getIntent().getStringExtra("SLID"));
+        }
+        startActivity(intent);
+    }
+
+    public void openAddNewSentence(View v) {
+        Intent intent = new Intent(this, AddNewSentence.class);
         if (getIntent().hasExtra("SLID")) {
             intent.putExtra("SLID", getIntent().getStringExtra("SLID"));
         }

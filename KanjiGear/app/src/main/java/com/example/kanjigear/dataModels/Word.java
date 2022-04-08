@@ -1,5 +1,7 @@
 package com.example.kanjigear.dataModels;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class Word extends LearnElement {
@@ -12,7 +14,7 @@ public class Word extends LearnElement {
 
     private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
             + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
-            +"abcdefghaijklmnopqrstuvwxvzöäüABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ1234567890<>|-_+.:,;。．.・／１２３４５６７８９０";
+            +"abcdefghaijklmnopqrstuvwxvzöäüABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ1234567890<>|-_+.:,;。、．.・／１２３４５６７８９０";
 
     private ArrayList<String> wordWritings;
     private ArrayList<String> wordReadings;

@@ -36,7 +36,6 @@ public class DictElementSearch extends Thread {
         db = new DatabaseOpenHelper(dictionary.getApplicationContext());
     }
 
-    @SuppressLint("Range")
     @Override
     public void run() {
         if (elementType.equals("words")) {

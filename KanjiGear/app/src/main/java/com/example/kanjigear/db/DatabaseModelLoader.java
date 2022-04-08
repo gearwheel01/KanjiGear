@@ -2,6 +2,7 @@ package com.example.kanjigear.db;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.example.kanjigear.dataModels.*;
 
@@ -256,6 +257,7 @@ public class DatabaseModelLoader {
             int nextTestDate = c.getInt(c.getColumnIndex("nextTestDate"));
             sentences.add(new Sentence(SID, text, learningProgress));
             sentences.get(i).setNextTestDate(nextTestDate);
+            c.moveToNext();
         }
         c.close();
         return sentences;
