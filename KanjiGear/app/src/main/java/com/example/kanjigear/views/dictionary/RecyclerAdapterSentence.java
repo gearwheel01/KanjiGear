@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Sentence;
+import com.example.kanjigear.dataModels.Word;
 import com.example.kanjigear.views.components.KanjiView;
 import com.example.kanjigear.views.components.WordView;
 import com.example.kanjigear.views.studyLists.StudyListDetails;
@@ -22,6 +23,7 @@ public class RecyclerAdapterSentence extends RecyclerView.Adapter<RecyclerAdapte
     private ArrayList<Sentence> sentences;
     private WordView contextWord = null;
     private StudyListDetails contextList = null;
+    private Dictionary contextDict = null;
 
     public RecyclerAdapterSentence(WordView context, ArrayList<Sentence> sentences) {
         this.contextWord = context;
@@ -31,6 +33,12 @@ public class RecyclerAdapterSentence extends RecyclerView.Adapter<RecyclerAdapte
         this.contextList = context;
         this.sentences = sentences;
     }
+
+    public RecyclerAdapterSentence(Dictionary dictionary, ArrayList<Sentence> sentences) {
+        this.contextDict = dictionary;
+        this.sentences = sentences;
+    }
+
 
     public class sentenceViewHolder extends RecyclerView.ViewHolder {
         private TextView text;
@@ -60,6 +68,9 @@ public class RecyclerAdapterSentence extends RecyclerView.Adapter<RecyclerAdapte
             }
             if (contextList != null) {
                 contextList.openSentence(s);
+            }
+            if (contextDict != null) {
+                contextDict.openSentence(s);
             }
         });
     }

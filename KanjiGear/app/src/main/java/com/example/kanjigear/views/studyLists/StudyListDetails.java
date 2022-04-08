@@ -68,7 +68,7 @@ public class StudyListDetails extends AppCompatActivity {
         viewList.setItemAnimator(new DefaultItemAnimator());
         updateActiveView();
 
-        setListKanji();
+        setListWords();
 
         viewName.addTextChangedListener(new TextWatcher() {
             @Override

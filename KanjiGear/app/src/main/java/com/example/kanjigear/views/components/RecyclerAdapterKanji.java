@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Kanji;
+import com.example.kanjigear.views.dictionary.Dictionary;
 import com.example.kanjigear.views.studyLists.StudyListDetails;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class RecyclerAdapterKanji extends RecyclerView.Adapter<RecyclerAdapterKa
     private ArrayList<Kanji> kanji;
     private WordView contextWord = null;
     private StudyListDetails contextList = null;
+    private Dictionary contextDict = null;
 
     public RecyclerAdapterKanji(WordView context, ArrayList<Kanji> kanji) {
         this.contextWord = context;
@@ -26,6 +28,11 @@ public class RecyclerAdapterKanji extends RecyclerView.Adapter<RecyclerAdapterKa
     }
     public RecyclerAdapterKanji(StudyListDetails context, ArrayList<Kanji> kanji) {
         this.contextList = context;
+        this.kanji = kanji;
+    }
+
+    public RecyclerAdapterKanji(Dictionary dictionary, ArrayList<Kanji> kanji) {
+        this.contextDict = dictionary;
         this.kanji = kanji;
     }
 
@@ -54,6 +61,9 @@ public class RecyclerAdapterKanji extends RecyclerView.Adapter<RecyclerAdapterKa
             }
             if (contextList != null) {
                 contextList.openKanji(kanji.get(position).getSymbol());
+            }
+            if (contextDict != null) {
+                contextDict.openKanji(kanji.get(position).getSymbol());
             }
         });
     }
