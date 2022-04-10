@@ -6,15 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.kanjigear.About;
 import com.example.kanjigear.R;
 import com.example.kanjigear.db.DatabaseOpenHelper;
 import com.example.kanjigear.db.LoadDatabaseAsync;
-import com.example.kanjigear.views.components.KanjiView;
 import com.example.kanjigear.views.dictionary.Dictionary;
-import com.example.kanjigear.views.lesson.DrawKanji;
 import com.example.kanjigear.views.lesson.LessonBuilder;
-import com.example.kanjigear.views.lesson.SelfCorrection;
 import com.example.kanjigear.views.studyLists.StudyLists;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void openSettings(View v) {
-        Intent intent = new Intent(this, Dictionary.class);
+    public void openStatistics(View v) {
+        Intent intent = new Intent(this, Statistics.class);
         startActivity(intent);
     }
 
