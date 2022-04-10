@@ -33,7 +33,7 @@
     <com.example.kanjigear.views.components.KanjiGraphicView
         android:id="@+id/drawKanjiKanji"
         android:layout_width="320dp"
-        android:layout_height="309dp"
+        android:layout_height="320dp"
         android:layout_marginTop="45dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"

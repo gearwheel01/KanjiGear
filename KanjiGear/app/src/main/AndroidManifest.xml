@@ -10,10 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KanjiGear">
         <activity
+            android:name=".views.Statistics"
+            android:exported="false" />
+        <activity
             android:name=".views.dictionary.AddNewSentence"
             android:exported="false" />
         <activity
-            android:name=".About"
+            android:name=".views.About"
             android:exported="false" />
         <activity
             android:name=".views.lesson.SelfCorrection"

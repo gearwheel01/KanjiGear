@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -23,7 +22,12 @@ public class KanjiGraphicView extends View {
     private ArrayList<Stroke> strokes;
     private Path path = new Path();
     private int strokeWidth;
+    private int showHint;
 
+    private ArrayList<Path> pathsOutline;
+    private int outlineWidth;
+    private ArrayList<Path> pathsHelper;
+    private int helperWidth;
     private ArrayList<Path> drawnStrokes;
     private ArrayList<Integer> scores;
     private boolean drawMode = false;
@@ -38,6 +42,7 @@ public class KanjiGraphicView extends View {
     private final float TOLERANCE_PERCENTAGE = 0.2f;
     private final int BAD_STROKE_PUNISHMENT = -100;
     private final int STROKE_QUALITY_MINIMUM = 50;
+    private final int HINT_AFTER_MISSES = 3;
 
     public KanjiGraphicView(Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -52,7 +57,12 @@ public class KanjiGraphicView extends View {
 
     public void setStrokes(ArrayList<Stroke> strokes) {
         transformedPaths = false;
+
         strokeWidth = 5;
+        outlineWidth = 2;
+        helperWidth = 1;
+
+        showHint = 0;
         this.strokes = strokes;
         drawUntilStroke = strokes.size();
         lastStrokeLength = 0;
@@ -70,13 +80,26 @@ public class KanjiGraphicView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawPath(path, paint);
 
         if (!transformedPaths) {
             transformPaths();
         }
 
         if (strokes != null) {
+            paint.setColor(getResources().getColor(R.color.purple_300));
+            paint.setStrokeWidth(helperWidth);
+            for (int i = 0; i < pathsHelper.size(); i += 1) {
+                canvas.drawPath(pathsHelper.get(i), paint);
+            }
+            paint.setStrokeWidth(strokeWidth);
+
+            if (showHint >= HINT_AFTER_MISSES) {
+                paint.setColor(getResources().getColor(R.color.purple_300));
+                canvas.drawPath(strokes.get(drawStroke).getPath(), paint);
+            }
+
+            paint.setColor(Color.BLACK);
+            canvas.drawPath(path, paint);
             for (int i = 0; i < strokes.size(); i += 1) {
                 if (i <= drawUntilStroke) {
                     Path p = strokes.get(i).getPath();
@@ -89,14 +112,20 @@ public class KanjiGraphicView extends View {
                     canvas.drawPath(p, paint);
                 }
             }
+
             if (drawStroke >= strokes.size()) {
                 paint.setColor(Color.RED);
                 paint.setAlpha(150);
                 for (int i = 0; i < strokes.size(); i += 1) {
                     canvas.drawPath(drawnStrokes.get(i), paint);
                 }
-                paint.setColor(Color.BLACK);
                 paint.setAlpha(255);
+            }
+
+            paint.setColor(getResources().getColor(R.color.purple_500));
+            paint.setStrokeWidth(outlineWidth);
+            for (int i = 0; i < pathsOutline.size(); i += 1) {
+                canvas.drawPath(pathsOutline.get(i), paint);
             }
         }
     }
@@ -121,8 +150,10 @@ public class KanjiGraphicView extends View {
                     }
                     else {
                         scores.add(BAD_STROKE_PUNISHMENT);
+                        showHint += 1;
                     }
                     if (score >= STROKE_QUALITY_MINIMUM) {
+                        showHint = 0;
                         drawnStrokes.add(path);
                         drawStroke += 1;
                         drawUntilStroke += 1;
@@ -156,11 +187,17 @@ public class KanjiGraphicView extends View {
             for (int i = 0; i < strokes.size(); i += 1) {
                 strokes.get(i).transformPath(getWidth(), getHeight());
             }
+            strokeWidth = strokeWidth * (getWidth() / 109);
+            paint.setStrokeWidth(strokeWidth);
+            drawTolerance = (int)(getWidth() * TOLERANCE_PERCENTAGE);
+
+            outlineWidth = outlineWidth * (getWidth() / 109);
+            pathsOutline = getPathsOutline(getWidth());
+            helperWidth = helperWidth * (getWidth() / 109);
+            pathsHelper = getPathsHelper(getWidth());
+
             transformedPaths = true;
         }
-        strokeWidth = strokeWidth * (getWidth() / 109);
-        paint.setStrokeWidth(strokeWidth);
-        drawTolerance = (int)(getWidth() * TOLERANCE_PERCENTAGE);
     }
 
     public void updateStrokeDrawDetails(int drawUntilStroke, float lastStrokeLength) {
@@ -195,5 +232,39 @@ public class KanjiGraphicView extends View {
     public void resetDrawing() {
         setDrawMode(context);
         invalidate();
+    }
+
+    public ArrayList<Path> getPathsOutline(int size) {
+        ArrayList<Path> paths = new ArrayList<>();
+
+        int s = outlineWidth / 2;
+        int e = size - s;
+
+        paths.add(getLinePath(0, s, e + s, s));
+        paths.add(getLinePath(0, e, e + s, e));
+        paths.add(getLinePath(s, s, s, e));
+        paths.add(getLinePath(e, s, e, e));
+
+        return paths;
+    }
+
+    public ArrayList<Path> getPathsHelper(int size) {
+        ArrayList<Path> paths = new ArrayList<>();
+
+        int s = helperWidth / 2;
+        int m = (size / 2) - s;
+        int e = size - s;
+
+        paths.add(getLinePath(s, m, e, m));
+        paths.add(getLinePath(m, s, m, e));
+
+        return paths;
+    }
+
+    public Path getLinePath(int x1, int y1, int x2, int y2) {
+        Path p = new Path();
+        p.moveTo(x1, y1);
+        p.lineTo(x2, y2);
+        return p;
     }
 }

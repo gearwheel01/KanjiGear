@@ -1,7 +1,9 @@
 package com.example.kanjigear.views.lesson;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -296,5 +298,28 @@ public class DrawKanji extends AppCompatActivity {
             return kanji;
         }
         return null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (hasNextTask()) {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            finish();
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Do you really want to exit the lesson?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+        }
+        else {
+            finish();
+        }
     }
 }

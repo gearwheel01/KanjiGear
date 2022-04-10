@@ -34,6 +34,7 @@ public class LessonBuilder {
 
     private final int NUMBER_ELEMENTS_NEW = 3;
     private final int NUMBER_ELEMENTS_REVISE = 7;
+    private final int EARLY_LEARNING = 30;
 
     private final String TASK_ID_SELFCORRECTION = "S";
     private final String TASK_ID_DRAW = "D";
@@ -63,7 +64,7 @@ public class LessonBuilder {
         String lessonString = "";
         for (int i = 0; i < elementsLesson.size(); i += 1) {
             LearnElement element = elementsLesson.get(i);
-            if (element.getNextTestDate() == 0) {
+            if (element.getLearningProgress() <= EARLY_LEARNING) {
                 lessonString = addTaskToLesson(lessonString, elementsLesson.get(i), TASK_ID_SELFCORRECTION);
             }
             else {
@@ -72,7 +73,7 @@ public class LessonBuilder {
         }
         for (int i = 0; i < elementsLesson.size(); i += 1) {
             LearnElement element = elementsLesson.get(i);
-            if (element.getNextTestDate() == 0) {
+            if (element.getLearningProgress() <= EARLY_LEARNING) {
                 lessonString = addTaskToLesson(lessonString, elementsLesson.get(i), TASK_ID_DRAW);
             }
             else {

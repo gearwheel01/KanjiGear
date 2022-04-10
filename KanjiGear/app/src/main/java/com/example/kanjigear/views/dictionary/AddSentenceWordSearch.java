@@ -87,6 +87,9 @@ public class AddSentenceWordSearch extends Thread{
                     count = db.handleQuery("SELECT * FROM wordwriting WHERE writing LIKE '" + sub + "%' LIMIT 1;").getCount();
                     Log.d("a", sub + " count: " + count);
                     a += 1;
+                    if ( (count > 0) && (a > text.length()) ) {
+                        a += 1;
+                    }
 
                 } while ( (count > 0) && (a <= text.length()) );
                 db.closeDatabase();
@@ -111,7 +114,11 @@ public class AddSentenceWordSearch extends Thread{
                     Log.d("add", words.get(words.size() - 1).getWordWritings().get(0));
                 }
 
-                i = getNextKanjiIndex(kanji, a - 1);
+                int lastI = i;
+                i = getNextKanjiIndex(kanji, a);
+                if (i == lastI) {
+                    i += 1;
+                }
             }
         }
 
@@ -121,7 +128,7 @@ public class AddSentenceWordSearch extends Thread{
 
     public int getNextKanjiIndex(ArrayList<Integer> kanji, int currentIndex) {
         for (int i = 0; i < kanji.size(); i += 1) {
-            if (currentIndex < kanji.get(i)) {
+            if (currentIndex <= kanji.get(i)) {
                 return kanji.get(i);
             }
         }

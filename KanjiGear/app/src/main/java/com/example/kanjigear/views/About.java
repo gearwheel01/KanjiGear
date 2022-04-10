@@ -1,8 +1,10 @@
-package com.example.kanjigear;
+package com.example.kanjigear.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.kanjigear.R;
 
 public class About extends AppCompatActivity {
 

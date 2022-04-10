@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.kanjigear.R;
 import com.example.kanjigear.dataModels.Sentence;
@@ -212,6 +213,10 @@ public class AddNewSentence extends AppCompatActivity {
         saveWordsInSentence(SID);
         if (getIntent().hasExtra("SLID")) {
             addSentenceToList(SID, getIntent().getStringExtra("SLID"));
+            Toast.makeText(getApplicationContext(), "Added new sentence to list", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Added new sentence to dictionary", Toast.LENGTH_SHORT).show();
         }
         newSentence();
     }
