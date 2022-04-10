@@ -289,12 +289,15 @@ public class DrawKanji extends AppCompatActivity {
 
     public LearnElement getElement() {
         if (sentence != null) {
+            sentence.setInList(getIntent().getStringExtra("SLID"));
             return sentence;
         }
         if (word != null) {
+            word.setInList(getIntent().getStringExtra("SLID"));
             return word;
         }
         if (kanji != null) {
+            kanji.setInList(getIntent().getStringExtra("SLID"));
             return kanji;
         }
         return null;

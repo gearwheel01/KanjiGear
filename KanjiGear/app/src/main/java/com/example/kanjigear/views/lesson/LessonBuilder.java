@@ -93,6 +93,7 @@ public class LessonBuilder {
             ArrayList<String> taskDetails = getTokens(task, TASK_ID_INFO_SEP);
 
             String type = taskDetails.get(0);
+            String list = taskDetails.get(1);
             String element = taskDetails.get(2);
             String id = taskDetails.get(3);
 
@@ -112,6 +113,7 @@ public class LessonBuilder {
             }
             intent.putExtra(element, id);
             intent.putExtra("originalLesson", originalLesson);
+            intent.putExtra("SLID", list);
             intent.putExtra("lesson", newLesson);
             if (element.equals(TASK_ID_WORD)) {
                 intent.putExtra("writingIndex", Integer.parseInt(taskDetails.get(4)));
