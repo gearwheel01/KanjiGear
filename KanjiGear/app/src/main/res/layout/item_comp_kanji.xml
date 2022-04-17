@@ -15,6 +15,7 @@
         android:layout_marginBottom="10dp"
         android:background="@color/teal_700"
         android:text="本"
+        android:textColor="@color/white"
         android:textAllCaps="false"
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
