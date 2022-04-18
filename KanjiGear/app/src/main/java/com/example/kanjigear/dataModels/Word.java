@@ -12,10 +12,6 @@ public class Word extends LearnElement {
     private int writingIndex = -1;
     private int nextTestDate;
 
-    private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
-            + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
-            +"abcdefghaijklmnopqrstuvwxvzöäüABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ1234567890<>|-_+.:,;。、．.・／１２３４５６７８９０";
-
     private ArrayList<String> wordWritings;
     private ArrayList<String> wordReadings;
     private ArrayList<WordMeaning> wordTranslations;
@@ -80,9 +76,13 @@ public class Word extends LearnElement {
     public ArrayList<Character> getKanjiInWord(int writingIndex) {
         ArrayList<Character> kanji = new ArrayList<>();
         String writing = wordWritings.get(writingIndex);
+
         for (int c = 0; c < writing.length(); c += 1) {
             char symbol = writing.charAt(c);
-            if ( (!notkanjichars.contains(symbol + "")) && (!kanji.contains(symbol)) ) {
+            Character.UnicodeBlock symbolClass = Character.UnicodeBlock.of(symbol);
+            Log.d("word", "char: " + symbol + ", class: " + symbolClass);
+
+            if ( (!kanji.contains(symbol)) && (symbolClass.equals(Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS)) ) {
                 kanji.add(symbol);
             }
         }
@@ -121,7 +121,11 @@ public class Word extends LearnElement {
         String writing = wordWritings.get(writingIndex);
         for (int i = 0; i < writing.length(); i += 1) {
             char c = writing.charAt(i);
-            if (notkanjichars.contains(c + "")) {
+
+            Character.UnicodeBlock symbolClass = Character.UnicodeBlock.of(c);
+            Log.d("word", "char: " + c + ", class: " + symbolClass);
+
+            if (!symbolClass.equals(Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS)) {
                 ret += c;
             } else {
                 if (hide) {

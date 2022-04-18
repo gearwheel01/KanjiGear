@@ -1,5 +1,7 @@
 package com.example.kanjigear.dataModels;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class Sentence extends LearnElement {
@@ -10,10 +12,6 @@ public class Sentence extends LearnElement {
     private ArrayList<SentenceMeaning> meanings;
     private ArrayList<Word> words;
     private int nextTestDate;
-
-    private String notkanjichars=" あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをんっゃょゅぁぃぅぇぉゖゕ"
-            + "アイウエオカキクケコガギグゲゴサシスセソザジズゼゾタチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポマミムメモヤユヨラリルレロワヲンーャョュァィゥェォヵヶッ"
-            +"abcdefghaijklmnopqrstuvwxvzöäüABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ1234567890<>|-_+.:,;。、．.・／１２３４５６７８９０";
 
     public Sentence(String SID, String text, int learningProgress) {
         this.SID = SID;
@@ -90,7 +88,11 @@ public class Sentence extends LearnElement {
         String ret = "";
         for (int i = 0; i < text.length(); i += 1) {
             char c = text.charAt(i);
-            if (notkanjichars.contains(c + "")) {
+
+            Character.UnicodeBlock symbolClass = Character.UnicodeBlock.of(c);
+            Log.d("word", "char: " + c + ", class: " + symbolClass);
+
+            if (!symbolClass.equals(Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS)) {
                 ret += c;
             } else {
                 if (hide) {
@@ -122,7 +124,11 @@ public class Sentence extends LearnElement {
     public ArrayList<Integer> getKanjiIndexesInSentence() {
         ArrayList<Integer> kanji = new ArrayList<>();
         for (int i = 0; i < text.length(); i += 1) {
-            if (!notkanjichars.contains(text.charAt(i)+"")) {
+            char symbol = text.charAt(i);
+            Character.UnicodeBlock symbolClass = Character.UnicodeBlock.of(symbol);
+            Log.d("word", "char: " + symbol + ", class: " + symbolClass);
+
+            if ( (!kanji.contains(symbol)) && (symbolClass.equals(Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS)) ) {
                 kanji.add(i);
             }
         }
