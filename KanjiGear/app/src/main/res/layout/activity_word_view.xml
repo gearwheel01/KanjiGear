@@ -153,11 +153,12 @@
 
     <Button
         android:id="@+id/wordViewDraw"
-        android:layout_width="46dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="12dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:background="@drawable/button_paint"
         android:onClick="openDrawKanji"
-        app:layout_constraintStart_toEndOf="@+id/wordViewWord"
-        app:layout_constraintTop_toBottomOf="@+id/wordViewWritingAlt" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

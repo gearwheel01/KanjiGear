@@ -159,13 +159,13 @@
 
     <Button
         android:id="@+id/kanjiViewDraw"
-        android:layout_width="46dp"
-        android:layout_height="46dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/button_paint"
         android:onClick="openDrawKanji"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/kanjiViewKanji"
-        tools:layout_editor_absoluteY="316dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
